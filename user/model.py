@@ -8,6 +8,7 @@ class User(db.Model):
     username = mapped_column(String(50), unique=True, nullable=False)
     password = mapped_column(String(255), nullable=False)
     profile = relationship('Profile', backref='usres', uselist=False)
+    articles = relationship('Article', backref='users')
     bookmarks = relationship('Bookmark', backref='users')
 
     def __init__(self, username, password):
