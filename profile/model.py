@@ -10,7 +10,6 @@ class Profile(db.Model):
     profile_image = mapped_column(String(128), nullable=True)
     about = mapped_column(Text, nullable=True)
     user_id = mapped_column(Integer, ForeignKey('users.id'), unique=True, nullable=False)
-    
 
     def __init__(self, email, phonenumber, profile_image, about, user_id):
         super().__init__()
