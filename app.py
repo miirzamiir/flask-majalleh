@@ -1,7 +1,17 @@
 from flask import Flask
 from database import db
-from config import DATABASE_URI, HOST, PORT
 from secrets import token_hex
+from dotenv import load_dotenv
+import os
+from user.model import *
+from article.models import *
+
+
+load_dotenv()
+
+DATABASE_URI = os.getenv('DATABASE_URI')
+HOST = os.getenv('HOST')
+PORT = os.getenv('PORT')
 
 app = Flask(__name__)
 
