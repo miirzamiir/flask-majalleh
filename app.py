@@ -3,8 +3,6 @@ from database import db
 from secrets import token_hex
 from dotenv import load_dotenv
 import os
-from user.model import *
-from article.models import *
 
 
 load_dotenv()
