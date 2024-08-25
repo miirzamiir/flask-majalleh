@@ -1,6 +1,7 @@
 from database import db
 from sqlalchemy import Integer, String, ForeignKey, Text
 from sqlalchemy.orm import mapped_column, relationship
+from article.models import *
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -10,6 +11,7 @@ class User(db.Model):
     profile = relationship('Profile', backref='usres', uselist=False)
     articles = relationship('Article', backref='users')
     bookmarks = relationship('Bookmark', backref='users')
+    votes = relationship('Vote', backref='users')
 
     def __init__(self, username, password):
         super().__init__()
