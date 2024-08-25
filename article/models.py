@@ -49,8 +49,7 @@ class Article(db.Model):
         for article in articles:
             if len(selected_tags) > 12:
                 break
-            else:
-                selected_tags.extend(article.tags.split())
+            selected_tags.extend(article.tags.split())
         return list(set(selected_tags))
 
     def calculate_votes(self):
@@ -65,9 +64,6 @@ class Bookmark(db.Model):
     article_id = mapped_column(Integer, ForeignKey('articles.id'), primary_key=True)
     user_id = mapped_column(Integer, ForeignKey('users.id'), primary_key=True)
 
-    article = relationship('Article', backref='bookmarks')  
-    user = relationship('User', backref='bookmarks') 
-
     def __init__(self, article_id, user_id) -> None:
         super().__init__()
         self.article_id = article_id
@@ -79,9 +75,6 @@ class Vote(db.Model):
     article_id = mapped_column(Integer, ForeignKey('articles.id'), primary_key=True)
     user_id = mapped_column(Integer, ForeignKey('users.id'), primary_key=True)
     vote = mapped_column(Integer, nullable=False)
-
-    article = relationship('Article', backref='votes')  
-    user = relationship('User', backref='votes') 
 
     def __init__(self, article_id, user_id, vote) -> None:
         super().__init__()
