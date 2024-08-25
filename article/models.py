@@ -1,7 +1,7 @@
 from database import db
-from sqlalchemy import Integer, String, Text, ForeignKey
+from sqlalchemy import Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.orm import mapped_column, relationship
-from persiantools.jdatetime import JalaliDate
+from datetime import datetime
 
 
 class Category(db.Model):
@@ -28,9 +28,9 @@ class Article(db.Model):
     tags = mapped_column(String(200), nullable=True)
     category_id = mapped_column(Integer, ForeignKey('categories.id'), nullable=True)
     author_id = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
-    bookmarks = relationship('Bookmark', backref='article') 
-    date = mapped_column(String, default=lambda: JalaliDate.today().strftime('%Y/%m/%d'))  
-    votes = relationship('Vote', backref='article')
+    date = mapped_column(DateTime, default=datetime.now()) 
+    bookmarks = relationship('Bookmark', backref='articles') 
+    votes = relationship('Vote', backref='articles')
 
     def __init__(self, title, image, summary, text, tags, category_id, author_id) -> None:
         super().__init__()
