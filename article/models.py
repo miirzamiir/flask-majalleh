@@ -1,6 +1,6 @@
 from database import db
 from sqlalchemy import Integer, String, Text, ForeignKey, DateTime
-from sqlalchemy.orm import mapped_column, relationship
+from sqlalchemy.orm import mapped_column, relationship, backref
 from datetime import datetime
 
 
@@ -84,3 +84,21 @@ class Vote(db.Model):
 
     def __str__(self):
         return f'<Vote user_id={self.user_id}, article_id={self.article_id}, vote={self.vote}>'
+    
+
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    id = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
+    article_id = mapped_column(Integer, ForeignKey('articles.id'), nullable=False)
+    text = mapped_column(String(128))
+    parent_id = mapped_column(Integer, ForeignKey('comments.id'), nullable=True)
+    replies = relationship('Comment', backref=backref('parent', remote_side=[id]), lazy=True)
+
+
+    def __init__(self, user_id, article_id, text, parent_id=None):
+        super().__init__()
+        self.user_id = user_id
+        self.article_id = article_id
+        self.text = text
+        self.parent_id = parent_id
