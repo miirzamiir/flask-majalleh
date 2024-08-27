@@ -6,7 +6,8 @@ from flask_migrate import Migrate
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from article.models import Article, Category, Bookmark, Vote, Comment
-from user.models import User, Profile
+from user.models import User
+from user.routes import user_bp
 
 
 load_dotenv()
@@ -23,7 +24,7 @@ app.secret_key = token_hex(16)
 db.init_app(app)
 migrate = Migrate(app, db)
 
-# app.register_blueprint(user_bp, url_prefix='/user')
+app.register_blueprint(user_bp, url_prefix='/user')
 # app.register_blueprint(article_bp, url_prefix='/article')
 
 @app.get('/')
@@ -100,10 +101,11 @@ def register_post():
 def search():
     return 'search'
 
-@app.get('/logout')
+@app.post('/logout')
 def logout():
-    session.pop('user_id', None)  
-    flash('You have been logged out.', 'success')
+    if session.get('username'):
+        session.pop('username', None)  
+        
     return redirect('/')
 
 
