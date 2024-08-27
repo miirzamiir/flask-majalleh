@@ -7,11 +7,11 @@
                     <div class="btn-group" role="group" aria-label="Basic example">
                         {% if session.get('username') %}
                             {% if 'dashboard' in request.path %}
-                                <a href="{{ url_for('new_article') }}" class="btn btn-secondary">نوشته جدید</a>
-                                <a href="{{ url_for('edit_profile') }}" class="btn btn-secondary">ویرایش پروفایل</a>
+                                <a href="{{ url_for('logout') }}" class="btn btn-secondary">نوشته جدید</a>
+                                <a href="{{ url_for('user.update_profile') }}" class="btn btn-secondary">ویرایش پروفایل</a>
                             {% else %}
                                 <a href="{{ url_for('logout') }}" class="btn btn-secondary">نوشته جدید</a>
-                                <a href="{{ url_for('logout') }}" class="btn btn-secondary">پنل کاربری</a>
+                                <a href="{{ url_for('user.dashboard') }}" class="btn btn-secondary">پنل کاربری</a>
                             {% endif %}
                         {% else %}
                             <a href="{{ url_for('login') }}" class="btn btn-secondary">ورود</a>
@@ -24,7 +24,7 @@
                     <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt=""/></a>
                 </div>
                 <div class="dlab-topbar-right topbar-social">
-                    <form action="{{ url_for('search') }}" method="GET" id="SearchBox">
+                    <form action="{{ url_for('logout') }}" method="GET" id="SearchBox">
                         <input type="text" name="q" placeholder="جستجو در مجله ..." id="qinput" />
                         <div id="qcl" onclick="javascript:{ document.getElementById('SearchBox').submit() }"> <i class="fa fa-search" aria-hidden="true"></i></div>
                     </form>
@@ -73,7 +73,7 @@
                                     {% if 'dashboard' in request.path %}
                                         <a href="#">نوشته جدید<i class="fa fa-chevron-down"></i></a>
                                     {% else %}
-                                        <a href="{{ url_for('login') }}">پنل کاربری<i class="fa fa-chevron-down"></i></a>
+                                        <a href="{{ url_for('user.dashboard') }}">پنل کاربری<i class="fa fa-chevron-down"></i></a>
                                     {% endif %}
                                 {% else %}
                                     <a href="{{ url_for('login') }}">ورود<i class="fa fa-chevron-down"></i></a>

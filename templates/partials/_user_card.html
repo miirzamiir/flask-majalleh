@@ -1,27 +1,17 @@
-{% load static %}
 <div class="author-box blog-user m-b60">
     <div class="author-profile-info">
         <div class="author-profile-pic">
-            <a 
-            {% if profile.photo != None or profile%}
-                href="{{profile.photo.url}}"
-            {% else %}
-                href="{% static 'images/icon.png' %}"
-            {% endif %}
-            >
-
             <img
-             {% if profile.photo == None or profile%}
-                src="{{profile.photo.url}}"
+             {% if context.user.profile_image %}
+                src="{{ url_for('user.show_user_media', path=context.user.profile_image) }}"
             {% else %}
-                src="{% static 'images/icon.png' %}"
+                src="{{ url_for('static', filename='images/icon.png') }}"
             {% endif %}
-              alt=""></a>
+              alt="">
         </div>
         <div class="author-profile-content">
-            <a href="#"><h6> {{profile.user.first_name}} {{profile.user.last_name}}</h6></a>
-            <p> {{profile.bio}} </p>
-            
+            <a href="#"><h6> {{ context.user.first_name }} {{ context.user.last_name }}</h6></a>
+            <p> {{ context.user.about if context.user.about else '' }} </p>
         </div>
     </div>
 </div>

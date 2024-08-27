@@ -1,79 +1,74 @@
 {% extends 'base.html' %}
-{% load static %}
+
 {% block content %}
 
-	 <!-- Content -->
-    <div class="page-content bg-white">
-		<div class="content-block">
-            <!-- About Us -->
-            <div class="section-full content-inner bg-white">
-                <div class="container">
-					<div class="row">
-						<div class="col-12">
-							<div class="section-head text-center " id="profile-title">
-								<h3 class="title-head">تکمیل پروفایل کاربر </h3>
-								<hr>
-							</div>
-						</div>
-					</div>
-					<div>
-						<form class="shop-form row" action="{% url 'edit_profile' %}" method="POST" enctype="multipart/form-data" >
-							{% csrf_token %}
-							<div class="col-xl-7 col-lg-6 col-md-6 col-sm-6 m-b30 form">
-								{% include 'partials/_alerts.html' %}
-								<div class="row sp20">
-									<div class="form-group col-lg-6">
-										<input name="first_name" type="text" value="{{user.first_name}}" class="form-control" placeholder="نام" required />
-									</div>
-									<div class="form-group col-lg-6">
-										<input name="last_name" type="text" value="{{user.last_name}}" class="form-control" placeholder="نام خانوادگی" required />
-									</div>
-								</div>
-								<div class="row sp20">
-									<div class="form-group col-lg-6">
-										<input name="username" type="text" value="{{user.username}}" class="form-control" placeholder="نام کاربری" required>
-									</div>
-									<div class="form-group col-lg-6">
-										<input name="email" type="text" value="{{user.email}}" class="form-control" placeholder="ایمیل" required>
-									</div>
-								</div>
-								
-								
-								
-								<div class="row sp20">
-									<div class="form-group col-lg-6">
-										<input name="phone" type="text" value="{{profile.phone}}" class="form-control" placeholder="شماره تلفن">
-									</div>
-									<div class="form-group col-lg-6">
-										<input name="age" type="number" value="{{profile.age}}" min="16" max="100" class="form-control" placeholder="سن">
-									</div>
-								</div>
-								<input  type="file" id="profile-pic" name="pic"/>
+<!-- Content -->
+<div class="page-content bg-white">
+    <div class="content-block">
+        <!-- About Us -->
+        <div class="section-full content-inner bg-white">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="section-head text-center" id="profile-title">
+                            <h3 class="title-head">ویرایش پروفایل </h3>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <form class="shop-form row" action="{{ url_for('user.update_profile_post') }}" method="POST" enctype="multipart/form-data">
+                        <div class="col-xl-7 col-lg-6 col-md-6 col-sm-6 m-b30 form">
+                            {% include 'partials/_alerts.html' %}
+                            <div class="row sp20">
+                                <div class="form-group col-lg-6">
+                                    <input name="first_name" type="text" value="{{ context.user.first_name if context.user.first_name else ''}}" class="form-control" placeholder="نام" />
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <input name="last_name" type="text" value="{{ context.user.last_name if context.user.last_name else ''}}" class="form-control" placeholder="نام خانوادگی" />
+                                </div>
+                            </div>
+                            <div class="row sp20">
+                                <div class="form-group col-lg-6">
+                                    <input name="username" type="text" value="{{ context.user.username }}" class="form-control" placeholder="نام کاربری" required>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <input name="email" type="text" value="{{ context.user.email }}" class="form-control" placeholder="ایمیل" required>
+                                </div>
+                            </div>
+                            <div class="row sp20">
+                                <div class="form-group col-lg-6">
+                                    <input name="phone" type="text" value="{{ context.user.phonenumber if context.user.phonenumber else ''}}" class="form-control" placeholder="شماره تلفن">
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <input name="birth_date" type="text" value="{{ context.user.birth_date if context.user.birth_date else '' }}" id="persian-calendar" class="form-control" placeholder="تاریخ تولد:‌ روز - ماه - سال">
 
-								<div class="form-group col-log-6">
-									<label for="profile-pic" class="btn btn-secondary">
-										<i class="fa fa-upload"></i> عکس پروفایل
-									</label>	
-									
-								</div>
-								<div class="form-group">
-									<textarea  class="form-control" rows="5" name="bio" placeholder="خودت رو توصیف کن ...">{{profile.bio}}</textarea>
-								</div>
-								
-								<br/>
-								<br/>
+                                </div>
+                            </div>
+                            <input type="file" id="profile-pic" name="pic" />
 
-								<input id="profile-submit" class="btn btn-secondary" type="submit" value="ذخیره" />
+                            <div class="form-group col-log-6">
+                                <label for="profile-pic" class="btn btn-secondary">
+                                    <i class="fa fa-upload"></i> عکس پروفایل
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" rows="5" name="bio" placeholder="خودت رو توصیف کن ...">{{ context.user.about if context.user.about else ''  }}</textarea>
+                            </div>
+                            
+                            <br/>
+                            <br/>
 
-							</div>
-						</form>
-					</div>
-				</div>
+                            <input id="profile-submit" class="btn btn-secondary" type="submit" value="ذخیره" />
+                        </div>
+                    </form>
+                </div>
             </div>
-			<!-- About Us End -->
         </div>
-		<!-- contact area END -->
+        <!-- About Us End -->
     </div>
-    <!-- Content END-->
-       
+    <!-- contact area END -->
+</div>
+<!-- Content END-->
+
 {% endblock content %}
