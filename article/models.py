@@ -51,6 +51,13 @@ class Article(db.Model):
                 break
             selected_tags.extend(article.tags.split())
         return list(set(selected_tags))
+    
+    @classmethod
+    def slider(cls, session):
+        slider = []
+        for article in session.query(cls).order_by(cls.date.desc()).limit(10).all():
+            slider.append(article.image)
+        return slider
 
     def calculate_votes(self):
         return sum(vote.vote for vote in self.votes)
