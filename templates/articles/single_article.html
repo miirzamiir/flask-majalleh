@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% block head %} {% endblock head %}
 {% block content %}
 <div class="page-content bg-white">
 		<div class="content-block">
@@ -9,16 +9,16 @@
 					<div class="row">
 						<div class="col-xl-9 col-lg-8 col-md-7 col-sm-12 col-12">
 							<div class="section-head text-center">
-								<h2 class="title-head"><a href="{% url 'full_width' article.id %}"> {{article.title}}</a></h2>
+								<h2 class="title-head"> <a href="{{ url_for('article.full_width', username=article.author.username, title=article.title) }}">{{ article.title }}</a></h2>
 								
-								<div class="title-sm">نوشته‌ای از:<a href="{% url 'author' profile.user.username %}"> {{profile.user.first_name}} {{profile.user.last_name}} </a></div>
+								<div class="title-sm"> نوشته‌ای از <a href="#">{{ article.author.username }}</a></div>
 							</div>
 							<div class="blog-post blog-single blog-post-style-2 sidebar">
 								<div class="dlab-post-info">
 									<div class="dlab-post-text text">
 										<div class="alignwide">
 											<figure class="aligncenter">
-												<img src="{{article.photo.url}}" alt="">
+												<img src="{{ article.image }}" alt="">
 											</figure>
 										</div>
 										<p> {{article.text | safe }}</p>
@@ -27,7 +27,7 @@
 									{% include 'partials/_tags.html' %}
 									<div class="blog-card-info style-1 no-bdr">
 										<div class="date">
-											{{article.date }}
+											{{ article.date }}
 										</div>
 										
 									</div>

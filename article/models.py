@@ -2,6 +2,7 @@ from database import db
 from sqlalchemy import Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.orm import mapped_column, relationship, backref
 from datetime import datetime
+from user.models import User
 
 
 class Category(db.Model):
@@ -58,6 +59,10 @@ class Article(db.Model):
         for article in session.query(cls).order_by(cls.date.desc()).limit(10).all():
             slider.append(article.image)
         return slider
+    
+    @property
+    def author(self):
+        return User.query.get(self.author_id)
 
     def calculate_votes(self):
         return sum(vote.vote for vote in self.votes)
