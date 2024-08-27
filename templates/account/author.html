@@ -16,15 +16,15 @@
                     </div>
                     <div class="loadmore-content">
                         <div class="row" id="masonry">
-                            {% for article in context.articles %}
+                            {% for article in articles %}
                                 <div class="col-lg-6 col-md-12 col-sm-6 card-container">
                                     <div class="blog-card post-grid">
                                         <div class="blog-card-media">
                                             <img src="{{ article.photo.url }}" alt=""/>
                                         </div>
                                         <div class="blog-card-info">
-                                            <h4 class="title"><a href="{{ url_for('article', article_id=article.id) }}">{{ context.article.title }}</a></h4>
-                                            <div class="title-sm"><a href="{{ url_for('user.profile', username=context.user.username) }}">{{ context.user.first_name }} {{ context.user.last_name }}</a></div>
+                                            <h4 class="title"><a href="{{ url_for('article', article_id=article.id) }}">{{ article.title }}</a></h4>
+                                            <div class="title-sm"><a href="{{ url_for('user.profile', username=user.username) }}">{{ user.first_name }} {{ user.last_name }}</a></div>
                                             <p>{{ article.summary }}</p>
                                         </div>
                                     </div>
@@ -59,7 +59,7 @@
                         <div class="widget widget-stories">
                             <h6 class="widget-title"><span>جدیدترین مطالب</span></h6>
                             <div id="minislider1" class="post-carousel owl-carousel owl-theme owl-none owl-btn-3">
-                                {% for slide in context.slider %}
+                                {% for slide in slider %}
                                     <div class="item">
                                         <img src="{{ slide }}" alt=""/>
                                     </div>

@@ -22,26 +22,26 @@
                             {% include 'partials/_alerts.html' %}
                             <div class="row sp20">
                                 <div class="form-group col-lg-6">
-                                    <input name="first_name" type="text" value="{{ context.user.first_name if context.user.first_name else ''}}" class="form-control" placeholder="نام" />
+                                    <input name="first_name" type="text" value="{{ user.first_name if user.first_name else ''}}" class="form-control" placeholder="نام" />
                                 </div>
                                 <div class="form-group col-lg-6">
-                                    <input name="last_name" type="text" value="{{ context.user.last_name if context.user.last_name else ''}}" class="form-control" placeholder="نام خانوادگی" />
-                                </div>
-                            </div>
-                            <div class="row sp20">
-                                <div class="form-group col-lg-6">
-                                    <input name="username" type="text" value="{{ context.user.username }}" class="form-control" placeholder="نام کاربری" required>
-                                </div>
-                                <div class="form-group col-lg-6">
-                                    <input name="email" type="text" value="{{ context.user.email }}" class="form-control" placeholder="ایمیل" required>
+                                    <input name="last_name" type="text" value="{{ user.last_name if user.last_name else ''}}" class="form-control" placeholder="نام خانوادگی" />
                                 </div>
                             </div>
                             <div class="row sp20">
                                 <div class="form-group col-lg-6">
-                                    <input name="phone" type="text" value="{{ context.user.phonenumber if context.user.phonenumber else ''}}" class="form-control" placeholder="شماره تلفن">
+                                    <input name="username" type="text" value="{{ user.username }}" class="form-control" placeholder="نام کاربری" required>
                                 </div>
                                 <div class="form-group col-lg-6">
-                                    <input name="birth_date" type="text" value="{{ context.user.birth_date if context.user.birth_date else '' }}" id="persian-calendar" class="form-control" placeholder="تاریخ تولد:‌ روز - ماه - سال">
+                                    <input name="email" type="text" value="{{ user.email }}" class="form-control" placeholder="ایمیل" required>
+                                </div>
+                            </div>
+                            <div class="row sp20">
+                                <div class="form-group col-lg-6">
+                                    <input name="phone" type="text" value="{{ user.phonenumber if user.phonenumber else ''}}" class="form-control" placeholder="شماره تلفن">
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <input name="birth_date" type="text" value="{{ user.birth_date if user.birth_date else '' }}" id="persian-calendar" class="form-control" placeholder="تاریخ تولد:‌ روز - ماه - سال">
 
                                 </div>
                             </div>
@@ -53,7 +53,7 @@
                                 </label>
                             </div>
                             <div class="form-group">
-                                <textarea class="form-control" rows="5" name="bio" placeholder="خودت رو توصیف کن ...">{{ context.user.about if context.user.about else ''  }}</textarea>
+                                <textarea class="form-control" rows="5" name="bio" placeholder="خودت رو توصیف کن ...">{{ user.about if user.about else ''  }}</textarea>
                             </div>
                             
                             <br/>

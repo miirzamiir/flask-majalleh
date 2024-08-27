@@ -5,7 +5,7 @@
     <!-- inner page banner -->
     <div class="row">
         <div class="container col-xs-0 col-sm-0" id="typemachine" width="100%" 
-        style="background-image: url('{{ url_for('static', filename='images/post-slide/typingmachine1.jpg') }}');">
+        style="background-image: url("{{ url_for('static', filename='images/post-slide/typingmachine1.jpg') }}");>
             
             <h3 class="title"> "مجــــــله" چیـــــــست؟  </h3>
             <div class="text">
@@ -42,8 +42,10 @@
                                                 <img src="{{ article.image }}" alt=""/>
                                             </div>
                                             <div class="blog-card-info">
-                                                <h4 class="title"><a href="{{ url_for('article.single_article', username=article.author.username, title=article.title) }}">{{ article.title }}</a></h4>
-                                                <div class="title-sm"><a href="#">{{ article.author.username }}</a></div>
+                                                <h4 class="title">
+                                                    <a href="{{ url_for('article.article', username=article.author.username, title=article.title) }}">{{ article.title }}</a>
+                                                </h4>                                                
+                                                <div class="title-sm"><a href="{{ url_for('user.profile', username=article.author.username)}}">{{ article.author.username }}</a></div>
                                                 <p>{{ article.summary }}</p>
                                             </div>
                                         </div>

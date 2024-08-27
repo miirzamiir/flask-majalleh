@@ -36,7 +36,7 @@ def register_post():
     password = request.form.get('password')
     re_password = request.form.get('repassword')
 
-    redirect_path = url_for('register')
+    redirect_path = url_for('auth.register')
     existing_user = User.query.filter((User.username==username) | (User.email==email)).first()
     
     if existing_user:

@@ -2,16 +2,16 @@
     <div class="author-profile-info">
         <div class="author-profile-pic">
             <img
-             {% if context.user.profile_image %}
-                src="{{ url_for('user.show_user_media', path=context.user.profile_image) }}"
+             {% if user.profile_image %}
+                src="{{ url_for('user.show_user_media', path=user.profile_image) }}"
             {% else %}
                 src="{{ url_for('static', filename='images/icon.png') }}"
             {% endif %}
               alt="">
         </div>
         <div class="author-profile-content">
-            <a href="#"><h6> {{ context.user.first_name }} {{ context.user.last_name }}</h6></a>
-            <p> {{ context.user.about if context.user.about else '' }} </p>
+            <a href="#"><h6> {{ user.first_name }} {{ user.last_name }}</h6></a>
+            <p> {{ user.about if user.about else '' }} </p>
         </div>
     </div>
 </div>

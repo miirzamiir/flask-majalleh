@@ -53,7 +53,7 @@
                 <br/>
                 <h2>ثبت نام در مجله </h2>
             </div>
-            <form action="{{ url_for('user.register_post') }}" method="POST">
+            <form action="{{ url_for('auth.register_post') }}" method="POST">
 
                 {% include 'partials/_alerts.html' %}
 
@@ -87,7 +87,7 @@
 
                 <input type="submit" value="ثبت نام" class="btn btn-secondary btn-fa"/>
                 <br/>
-                <a href="{{ url_for('user.login') }}" class="link"> قبلا ثبت نام کرده بودید؟ </a>
+                <a href="{{ url_for('auth.login') }}" class="link"> قبلا ثبت نام کرده بودید؟ </a>
             </form>
         </div>
     </div>
