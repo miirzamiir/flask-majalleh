@@ -1,54 +1,58 @@
 {% extends 'base.html' %}
-{% load static %}
 {% block content %}
 
 <!-- Content -->
-    <div class="page-content bg-white">
-        <div class="content-block">
-            <!-- About Us -->
-            <div class="section-full bg-white content-inner about-us">
-                <div class="container">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="text-center section-head">
-								<h1 class="title-head1">درباره مجله</h1>
-							</div>
-							<div class="alignwide">
-								<figure class="aligncenter">
-									<img id="#aboutimg" src="{% static 'images/post-slide/typingmachine1.jpg' %}" width="70%" height="70%" alt="">
-								</figure>
-							</div>
-							<div class="blog-post blog-single blog-post-style-2">
-								<div class="dlab-post-info">
-									<div class="dlab-post-text text">
-										<div class="row text-justify">
-											<div class="col-lg-6">
-												<p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی و فرهنگ پیشرو در زبان فارسی ایجاد کرد. در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها و شرایط سخت تایپ به پایان رسد وزمان مورد نیاز شامل حروفچینی دستاوردهای اصلی و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد. </p>
-											</div>
-											<div class="col-lg-6">
-												<p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی و فرهنگ پیشرو در زبان فارسی ایجاد کرد. در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها و شرایط سخت تایپ به پایان رسد وزمان مورد نیاز شامل حروفچینی دستاوردهای اصلی و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.</p>
-											</div>
-										</div>
-										<div class="text-center">
-											<ul class="list-inline link-btn-style m-b0">
-                                                <li><a href="https://t.co/W8JW8Zfd5d?amp=1" class="site-button-link"><i class="fa fa-telegram" aria-hidden="true"></i></a></li>
-                                                <li><a href="https://twitter.com/miirzamiir" class="site-button-link"><i class="fa fa-twitter"></i></a></li>
-                                                <li><a href="https://github.com/miirzamiir" class="site-button-link"><i class="fa fa-github" aria-hidden="true"></i></a></li>
-                                                <li><a href="https://instagram.com/miirzamiir" class="site-button-link"><i class="fa fa-instagram"></i></a></li>
-						                	</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-            </div>
-			<!-- About Us End -->
-			
-        </div>
-		<!-- contact area END -->
-    </div>
-    <!-- Content END-->
+<div class="page-content bg-white">
+    <div class="content-block">
+        <!-- About Us -->
+        <div class="section-full bg-white content-inner about-us">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center section-head">
+                            <h1 class="title-head1">درباره مجله</h1>
+                        </div>
+                        <div class="alignwide">
+                            <figure class="aligncenter">
+                                <img id="aboutimg" src="{{ url_for('static', filename='images/post-slide/typingmachine1.jpg') }}" width="70%" height="70%" alt="">
+                            </figure>
+                        </div>
+                        <div class="blog-post blog-single blog-post-style-2">
+                            <div class="dlab-post-info">
+                                <div class="dlab-post-text text">
+                                    <div class="row text-justify">
+                                        <div class="col-lg-6">
+                                            <p>به وب‌سایت ما خوش آمدید! ما یک پلتفرم بلاگینگ هستیم که با هدف ایجاد فضایی برای به اشتراک‌گذاری ایده‌ها، تجربیات و نظرات شما طراحی شده است. در دنیای امروز، بلاگینگ به یکی از ابزارهای مهم برای بیان خود و ارتباط با دیگران تبدیل شده است. ما اینجا هستیم تا به شما کمک کنیم صدای خود را به گوش دیگران برسانید و با جامعه‌ای از نویسندگان و خوانندگان همفکر ارتباط برقرار کنید.
 
-{% endblock content %}}
+                                                این وب‌سایت با قابلیت‌های متنوعی مانند ساخت اکانت شخصی، نوشتن مطالب، و امکان کامنت‌گذاری برای تعامل بیشتر بین کاربران طراحی شده است. ما به شما این امکان را می‌دهیم که به راحتی مطالب خود را منتشر کنید و نظرات دیگران را دریافت کنید. این تعاملات نه تنها به غنای محتوای سایت کمک می‌کند، بلکه به شما این فرصت را می‌دهد که از تجربیات و نظرات دیگران بهره‌مند شوید.</p>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p>
+                                                این پلتفرم توسط دو برنامه‌نویس جوان و پرشور ایجاد شده است که با عشق و علاقه به دنیای فناوری و نوشتن، تصمیم به راه‌اندازی این سایت گرفتند. ما به دنبال ایجاد یک فضای دوستانه و خلاقانه هستیم که در آن هر کسی بتواند به راحتی ایده‌های خود را به اشتراک بگذارد و از دیگران الهام بگیرد.
+
+به ما بپیوندید و با هم دنیای جدیدی از نوشتن و ارتباطات را تجربه کنیم. ما منتظر خواندن نوشته‌های شما و شنیدن نظراتتان هستیم!
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <ul class="list-inline link-btn-style m-b0">
+                                            <li><a href="https://t.co/W8JW8Zfd5d?amp=1" class="site-button-link"><i class="fa fa-telegram" aria-hidden="true"></i></a></li>
+                                            <li><a href="https://twitter.com/miirzamiir" class="site-button-link"><i class="fa fa-twitter"></i></a></li>
+                                            <li><a href="https://github.com/miirzamiir" class="site-button-link"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+                                            <li><a href="https://instagram.com/miirzamiir" class="site-button-link"><i class="fa fa-instagram"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- About Us End -->
+    </div>
+    <!-- contact area END -->
+</div>
+<!-- Content END -->
+
+{% endblock content %}

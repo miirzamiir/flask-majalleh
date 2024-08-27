@@ -1,74 +1,95 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<!-- FAVICONS ICON -->
-	<link rel="icon" href="{% static 'images/icon.png' %}" />
-	<link rel="shortcut icon" type="image/x-icon" href="{% static 'images/icon.png"' %}" />
-	
-	<!-- FONTS -->
-	<link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+    <!-- FAVICONS ICON -->
+    <link rel="icon" href="{{ url_for('static', filename='images/icon.png') }}" />
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='images/icon.png') }}" />
+    
+    <!-- FONTS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
 
-	<!-- PAGE TITLE HERE -->
-	<title>مجله - majalleh</title>
+    <!-- PAGE TITLE HERE -->
+    <title>مجله - majalleh</title>
 
-	<!-- STYLE SHEETS -->
-	<link rel="stylesheet" type="text/css" href="{% static 'css/plugins.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/templete.css' %}">
-	<link class="skin" rel="stylesheet" type="text/css" href="{% static 'css/skin/skin-1.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/logsign.css' %}">
+    <!-- STYLE SHEETS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/plugins.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/templete.css') }}">
+    <link class="skin" rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skin/skin-1.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/logsign.css') }}">
+
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+
+    <script>
+        function checkPasswordMatch() {
+            const password = document.querySelector('input[name="password"]').value;
+            const repassword = document.querySelector('input[name="repassword"]').value;
+            const message = document.getElementById('password-match-message');
+
+            if (password !== repassword) {
+                message.textContent = 'رمز عبور با تکرارش مطابقت ندارد.';
+            } else {
+                message.textContent = '';
+            }
+        }
+    </script>
 
 </head>
 <body>
-	<div id="ls-box" class="container">
-		<div class="form">
-			<div class="title">
-				<a href="{% url 'index' %}"> <img src=" {% static 'images/logo.png' %}"> </a>
+    <div id="ls-box" class="container">
+        <div class="form">
+            <div class="title">
+                <a href="{{ url_for('home') }}"> <img src="{{ url_for('static', filename='images/logo.png') }}"> </a>
+                <br/>
+                <h2>ثبت نام در مجله </h2>
+            </div>
+            <form action="{{ url_for('register_post') }}" method="POST">
 
-				<br/>
-				<h2>ثبت نام در مجله </h2>
-			</div>
-			<form action="{% url 'register' %}" method="POST">
-			{% csrf_token %}
+                {% include 'partials/_alerts.html' %}
 
-			{% include 'partials/_alerts.html' %}
+                <div class="input-group container">
+                    <span class="input-group-append">
+                        <button type="submit" class="btn-sm fa-btn"><i class="fa fa-user"></i></button>
+                    </span> 
+                    <input name="username" type="text" class="form-control" placeholder="نام کاربری (انگلیسی وارد شود)">
+                </div>
+                <div class="input-group container">
+                    <span class="input-group-append">
+                        <button type="submit" class="btn-sm fa-btn"><i class="fa fa-envelope"></i></button>
+                    </span> 
+                    <input name="email" type="email" class="form-control" placeholder="ایمیل">
+                </div>
 
-			<div class="input-group container">
-				<span class="input-group-append">
-				<button type="submit" class="btn-sm fa-btn"><i class="fa fa-user"></i></button>
-				</span> 
-				<input name="username" type="text" class="form-control" placeholder="نام کاربری (انگلیسی وارد شود)">
-			</div>
-			<div class="input-group container">
-				<span class="input-group-append">
-				<button type="submit" class="btn-sm fa-btn"><i class="fa fa-envelope"></i></button>
-				</span> 
-				<input name="email" type="email" class="form-control" placeholder="ایمیل">
-			</div>
+                <div class="input-group container">
+                    <span class="input-group-append">
+                        <button type="submit" class="btn-sm fa-btn"><i class="fa fa-key"></i></button>
+                    </span> 
+                    <input name="password" type="password" class="form-control" placeholder="رمزعبور" oninput="checkPasswordMatch()">
+                </div>
+                <div class="input-group container">
+                    <span class="input-group-append">
+                        <button type="submit" class="btn-sm fa-btn"><i class="fa fa-key"></i></button>
+                    </span> 
+                    <input name="repassword" type="password" class="form-control" placeholder="تکرار رمزعبور" oninput="checkPasswordMatch()">
+                </div>
+                
+                <div id="password-match-message" class="error-message"></div>
 
-			<div class="input-group container">
-				<span class="input-group-append">
-				<button type="submit" class="btn-sm fa-btn"><i class="fa fa-key"></i></button>
-				</span> 
-				<input name="password" type="password" class="form-control" placeholder="رمزعبور">
-			</div>
-			<div class="input-group container">
-				<span class="input-group-append">
-				<button type="submit" class="btn-sm fa-btn"><i class="fa fa-key"></i></button>
-				</span> 
-				<input name="repassword" type="password" class="form-control" placeholder="تکرار رمزعبور">
-			</div>
-			
-			<input type="submit" value="ثبت نام"  class="btn btn-secondary btn-fa"/>
-			<br/>
-			<a href="{% url 'login' %}" class="link"> قبلا ثبت نام کرده بودی؟ </a>
-			</form>
-		</div>
-	</div>
+                <input type="submit" value="ثبت نام" class="btn btn-secondary btn-fa"/>
+                <br/>
+                <a href="{{ url_for('login') }}" class="link"> قبلا ثبت نام کرده بودید؟ </a>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

@@ -640,10 +640,10 @@ var LeMars = function(){
 		}
 	}
 	
-	var handleSupport = function(){
-		var support = '<a href="#"> link to somewhere </a>';
-		jQuery('body').append(support);
-	}
+	// var handleSupport = function(){
+	// 	var support = '<a href="#"> link to somewhere </a>';
+	// 	jQuery('body').append(support);
+	// }
 	
 	/* Website Launch Date */ 
 	var WebsiteLaunchDate = new Date();
