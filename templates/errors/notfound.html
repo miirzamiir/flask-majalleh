@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <style>
+        .notfound-image {
+            height: 400;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+        }
+    </style>
+{% endblock head %}
+
+{% block content %}
+    <h3 class="head-title text-center">صفحه مورد نظر پیدا نشد</h3>
+    <img class="notfound-image" src="{{ url_for('static', filename='images/404.jpg') }}" />
+    <br />
+    <br />
+{% endblock content %}
