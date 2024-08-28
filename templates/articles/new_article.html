@@ -1,5 +1,43 @@
 {% extends 'base.html' %}
 {% block head %}
+	<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+	<style>
+		.ql-editor p {
+			color: black !important;
+		}
+		.ql-editor::before {
+    		text-align: right;
+    		display: block;
+    		width: 100%;
+		}
+		#image-preview {
+            display: none;
+            margin-bottom: 10px;
+            max-width: 100%;
+            max-height: 200px;
+			margin-left: auto;
+  			margin-right: auto;
+  			width: 50%;
+        }
+		#image-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+		.delete-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 16px;
+            display: none; 
+        }
+	</style>
 {% endblock head %}
 {% block content %}
 
@@ -19,10 +57,14 @@
 						</div>
 					</div>
 					<div>
-						<form class="shop-form row" method="POST" enctype="multipart/form-data" >
+						<form id="data-form" class="shop-form row" method="POST" enctype="multipart/form-data" >
 							<div class="col-xl-7 col-lg-6 col-md-6 col-sm-6 m-b30 form">
 								
-								<input  type="file" id="profile-pic" name="pic"/>
+								<div id="image-container">
+									<img id="image-preview" src="" alt="Image Preview">
+									<button type="button" class="delete-button" id="delete-button" onclick="deleteImage()">✖</button>
+								</div>
+								<input  type="file" id="profile-pic" name="pic" accept="image/*" />
 								<div class="form-group col-log-6">
 									<label for="profile-pic" class="btn btn-secondary">
 										<i class="fa fa-upload"></i> عکس ابتدایی مقاله
@@ -41,18 +83,19 @@
 									<div class="form-group col-lg-6" >
 										<select name="category" class="form-control select-article-category" title="دسته بندی" >
                                             {% for category in categories %}
-                                                <option value="{{category.label}}"> {{category.label}} </option> 
+                                                <option value="{{ category.label }}"> {{ category.label }} </option> 
                                             {% endfor %}
                                         </select>
 									</div>
 								</div>
 								<div class="form-group">
-									<textarea required class="form-control " id="richtexteditor" rows="40" name="text" placeholder="متن مقاله ..."></textarea>
+									<div id="editor">
+									</div>
 								</div>
 								
 								<br/>
 								<br/>
-
+								<input type="file" id="fileInput" style="display:none;" accept="image/*,video/*" />
 								<input id="profile-submit" class="btn btn-secondary" type="submit" value="انتشار مقاله" />
 
 							</div>
@@ -66,8 +109,157 @@
     </div>
     <!-- Content END-->
 		</div>
-       
-    <script>
-        CKEDITOR.replace('richtexteditor');
-    </script>
+
 {% endblock content %}
+{% block scripts %}
+	<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+	<script>
+		const toolbarOptions = [
+		    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+		    ['blockquote', 'code-block'],
+		    ['link', 'image', 'video', 'formula'],
+
+		    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+		    [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+		    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+		    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+		    [{ 'direction': 'rtl' }],                         // text direction
+
+		    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+		    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+		    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+		    [{ 'font': [] }],
+		    [{ 'align': [] }],
+			
+
+		    ['clean']                                         // remove formatting button
+		];
+
+		const quill = new Quill('#editor', {
+		  modules: {
+		    toolbar: toolbarOptions
+		  },
+		  theme: 'snow',
+		  placeholder: 'هرچی دوست داری بنویس...'
+		});
+		quill.format('align', 'right')
+		quill.format('direction', 'rtl')
+
+		quill.getModule('toolbar').addHandler('image', function() {
+            document.getElementById('fileInput').click();
+        });
+
+        quill.getModule('toolbar').addHandler('video', function() {
+            document.getElementById('fileInput').click();
+        });
+
+		let filename = ''
+		document.getElementById('profile-pic').addEventListener('change', function() {
+			let file = this.files[0];
+            let formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(url => {
+                filename = url
+				const preview = document.getElementById('image-preview');
+				const deleteButton = document.getElementById('delete-button');
+				deleteButton.style.display = 'block'
+				preview.src = url;
+				preview.style.display = 'block';
+
+            })
+            .catch(error => {
+                console.error('Error uploading file:', error);
+            });
+		})
+
+        document.getElementById('fileInput').addEventListener('change', function() {
+            let file = this.files[0];
+            let formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(url => {
+                let range = quill.getSelection();
+                if (file.type.startsWith('image/')) {
+                    quill.insertEmbed(range.index, 'image', url);
+                } else if (file.type.startsWith('video/')) {
+                    quill.insertEmbed(range.index, 'video', url);
+                }
+            })
+            .catch(error => {
+                console.error('Error uploading file:', error);
+            });
+        });
+
+		document.getElementById('data-form').addEventListener('submit', function(event) {
+		    event.preventDefault(); // Prevent the default form submission
+			console.log('hello')
+		    const formData = new FormData(this); // Create a FormData object from the form
+
+		    // Add additional data to FormData
+		    formData.append('html-content', quill.getSemanticHTML(0, quill.getLength()));
+			formData.append('image', filename);
+
+		    // Post data to the server
+		    fetch('/article/save-article', {
+		        method: 'POST', // Specify the request method
+		        body: formData // Send the FormData object directly
+		    })
+		    .then(response => response.text())
+            .then(url => {
+                window.location.replace(url)
+            })
+		    .catch((error) => {
+		        console.error('Error:', error); // Handle error
+		    });
+		});
+
+		function deleteImage() {
+			if (!filename) {
+				return;
+			}
+			const formData = new FormData();
+            formData.append('filename', filename); // Append the filename to FormData
+			console.log(filename)
+
+            fetch('/delete-file', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    const preview = document.getElementById('image-preview');
+                    const deleteButton = document.getElementById('delete-button');
+                    preview.src = ''; // Clear the image source
+                    preview.style.display = 'none'; // Hide the image
+                    deleteButton.style.display = 'none'; // Hide the delete button
+                    document.getElementById('profile-pic').value = ''; // Clear the file input
+                    filename = ''; // Reset filename variable
+                } else {
+                    console.error('Error:', data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+	</script>
+	<script>
+		window.addEventListener('load', function() {
+    		const btnGroups = document.querySelectorAll('.ql-formats .btn-group');
+    		btnGroups.forEach(btnGroup => {
+        			btnGroup.parentNode.removeChild(btnGroup);
+    			});
+		});
+	</script>
+{% endblock scripts %}
