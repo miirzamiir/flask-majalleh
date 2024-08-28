@@ -15,6 +15,7 @@
                         <br />
                         <h3 class="title-head">  نوشته‌های شما  </h3>
                         <hr/>
+                        {% include 'partials/_alerts.html' %}
                     </div>
                     <div class="loadmore-content">
                         <div class="row" id="masonry">
@@ -26,9 +27,10 @@
                                         </div>
                                         <div class="blog-card-info">
                                             <h4 class="title"><a href="{{ url_for('article.article', username=user.username, title=article.title) }}">{{ article.title }}</a></h4>
-                                            <div class="title-sm"><a href="{{ url_for('article.edit_article', username=user.username, title=article.title) }}"> ویرایش </a></div>
-                                            <div class="title-sm"><a href="{{ url_for('user.profile', username=user.username) }}"> {{ article.author.first_name }} {{ article.author.last_name }}</a></div>
                                             <p>{{ article.summary }}</p>
+                                            <div class="title-sm"><a href="{{ url_for('user.profile', username=user.username) }}"> {{ article.author.first_name }} {{ article.author.last_name }}</a></div>
+                                            <div class="title-sm"><a href="{{ url_for('article.edit_article', username=user.username, title=article.title) }}"> ویرایش </a></div>
+                                            <div class="title-sm"><a href="{{ url_for('article.delete_article', username=user.username, title=article.title) }}"> حذف </a></div>
                                         </div>
                                     </div>
                                 </div>

@@ -135,4 +135,29 @@ def save_edit_article(username, title):
             flash(error, category='danger')
 
     return url_for('article.edit_article', username=user.username, title=article.title)
+
+@article_bp.get('/<username>/<title>/delete-article')
+def delete_article(username, title):
+    if 'username' not in session:
+        abort(401)
+    
+    if session['username'] != username:
+        abort(401)
+
+    user = User.query.filter(User.username == username).first()
+    article = Article.query.filter(Article.author_id == user.id, Article.title == title).first()
+
+    if article is None:
+        abort(404)
+    try:
+        db.session.delete(article)
+        db.session.commit()
+        flash('مقاله با موفقیت حذف شد', category='success')
+    except:
+        flash('خطا در برقراری با سرور', category='danger')
+
+    return redirect(url_for('user.dashboard'))
         
+
+        
+    
