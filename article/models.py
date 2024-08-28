@@ -63,6 +63,10 @@ class Article(db.Model):
     @property
     def author(self):
         return User.query.get(self.author_id)
+    
+    @property
+    def category(self):
+        return Category.query.get(self.category_id)
 
     def calculate_votes(self):
         return sum(vote.vote for vote in self.votes)

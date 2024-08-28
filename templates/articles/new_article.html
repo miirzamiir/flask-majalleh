@@ -10,34 +10,8 @@
     		display: block;
     		width: 100%;
 		}
-		#image-preview {
-            display: none;
-            margin-bottom: 10px;
-            max-width: 100%;
-            max-height: 200px;
-			margin-left: auto;
-  			margin-right: auto;
-  			width: 50%;
-        }
-		#image-container {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-		.delete-button {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: black;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            padding: 5px;
-            font-size: 16px;
-            display: none; 
-        }
 	</style>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/upload.css') }}"/>
 {% endblock head %}
 {% block content %}
 
@@ -51,7 +25,11 @@
 					<div class="row">
 						<div class="col-12">
 							<div class="section-head text-center " id="profile-title">
-								<h3 class="title-head">نوشتن مقاله جدید </h3>
+								{% if not article %}
+									<h3 class="title-head">نوشتن مقاله جدید </h3>
+								{% else %}
+									<h3 class="title-head">ویرایش مقاله</h3>
+								{% endif %}
 								<hr>
 							</div>
 						</div>
@@ -59,10 +37,17 @@
 					<div>
 						<form id="data-form" class="shop-form row" method="POST" enctype="multipart/form-data" >
 							<div class="col-xl-7 col-lg-6 col-md-6 col-sm-6 m-b30 form">
+
+								{% include 'partials/_alerts.html' %}
 								
 								<div id="image-container">
-									<img id="image-preview" src="" alt="Image Preview">
-									<button type="button" class="delete-button" id="delete-button" onclick="deleteImage()">✖</button>
+									{% if article %}
+										<img id="image-preview" src="{{ article.image }}" alt="Image Preview" style="display: block !important;">
+										<button type="button" class="delete-button" id="delete-button" onclick="deleteImage()">✖</button>
+									{% else %}
+										<img id="image-preview" src="" alt="Image Preview">
+										<button type="button" class="delete-button" id="delete-button" onclick="deleteImage()">✖</button>
+									{% endif %}
 								</div>
 								<input  type="file" id="profile-pic" name="pic" accept="image/*" />
 								<div class="form-group col-log-6">
@@ -71,21 +56,46 @@
 									</label>		
 								</div>
 								<div class="form-group ">
-									<input name="title" type="text" class="form-control summary" placeholder="نام" required />
+									{% if article %}
+										<input name="title" type="text" class="form-control summary" placeholder="نام" value="{{ article.title }}" />
+									{% else %}
+										<input name="title" type="text" class="form-control summary" placeholder="نام" />
+									{% endif %}
 								</div>
 								<div class="form-group ">
-									<input name="summary" type="text" class="form-control" placeholder="توضیح مختصر" required />
+									{% if article %}
+										<input name="summary" type="text" class="form-control" placeholder="توضیح مختصر" value="{{ article.summary }}" />
+									{% else %}
+										<input name="summary" type="text" class="form-control" placeholder="توضیح مختصر" />
+									{% endif %}
 								</div>
                                 <div class="row sp20">
 									<div class="form-group col-lg-6">
-										<input name="tags" type="text" class="form-control" placeholder="برچسب‌ها(برچسب‌ها را با فاصله از هم جدا کنید.)" required />
+										{% if article %}
+											<input name="tags" type="text" class="form-control" placeholder="برچسب‌ها(برچسب‌ها را با فاصله از هم جدا کنید.)" value="{{ article.tags }}" />
+										{% else %}
+											<input name="tags" type="text" class="form-control" placeholder="برچسب‌ها(برچسب‌ها را با فاصله از هم جدا کنید.)" />
+										{% endif %}
+
 									</div>
 									<div class="form-group col-lg-6" >
-										<select name="category" class="form-control select-article-category" title="دسته بندی" >
-                                            {% for category in categories %}
-                                                <option value="{{ category.label }}"> {{ category.label }} </option> 
-                                            {% endfor %}
-                                        </select>
+										{% if article %}
+											<select name="category" class="form-control select-article-category" title="دسته بندی" >
+                                        	    {% for category in categories %}
+													{% if category.label == article.category.label %}
+                                        	        	<option selected value="{{ category.label }}"> {{ category.label }} </option>
+													{% else %}
+														<option value="{{ category.label }}"> {{ category.label }} </option>
+													{% endif %} 
+                                        	    {% endfor %}
+                                        	</select>
+										{% else %}
+											<select name="category" class="form-control select-article-category" title="دسته بندی" >
+												{% for category in categories %}
+													<option value="{{ category.label }}"> {{ category.label }} </option> 
+												{% endfor %}
+											</select>
+										{% endif %}
 									</div>
 								</div>
 								<div class="form-group">
@@ -96,7 +106,11 @@
 								<br/>
 								<br/>
 								<input type="file" id="fileInput" style="display:none;" accept="image/*,video/*" />
-								<input id="profile-submit" class="btn btn-secondary" type="submit" value="انتشار مقاله" />
+								{% if not article %}
+									<input id="profile-submit" class="btn btn-secondary" type="submit" value="انتشار مقاله" />
+								{% else %}
+									<input id="profile-submit" class="btn btn-secondary" type="submit" value="ویرایش مقاله" />
+								{% endif %}
 
 							</div>
 						</form>
@@ -112,6 +126,18 @@
 
 {% endblock content %}
 {% block scripts %}
+	{% if article %}
+		<script>
+			const path = '/{{article.author.username}}/{{article.title}}/save-edit-article'
+			const contentValue = `{{ article.text | safe }}`
+		</script>
+	{% else %}
+		<script>
+			const path = '/article/save-article'
+			const contentValue = ""
+		</script>
+	{% endif %}
+	<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 	<script>
 		const toolbarOptions = [
@@ -136,6 +162,7 @@
 		    ['clean']                                         // remove formatting button
 		];
 
+
 		const quill = new Quill('#editor', {
 		  modules: {
 		    toolbar: toolbarOptions
@@ -143,123 +170,10 @@
 		  theme: 'snow',
 		  placeholder: 'هرچی دوست داری بنویس...'
 		});
-		quill.format('align', 'right')
-		quill.format('direction', 'rtl')
 
-		quill.getModule('toolbar').addHandler('image', function() {
-            document.getElementById('fileInput').click();
-        });
-
-        quill.getModule('toolbar').addHandler('video', function() {
-            document.getElementById('fileInput').click();
-        });
-
-		let filename = ''
-		document.getElementById('profile-pic').addEventListener('change', function() {
-			let file = this.files[0];
-            let formData = new FormData();
-            formData.append('file', file);
-
-            fetch('/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(url => {
-                filename = url
-				const preview = document.getElementById('image-preview');
-				const deleteButton = document.getElementById('delete-button');
-				deleteButton.style.display = 'block'
-				preview.src = url;
-				preview.style.display = 'block';
-
-            })
-            .catch(error => {
-                console.error('Error uploading file:', error);
-            });
-		})
-
-        document.getElementById('fileInput').addEventListener('change', function() {
-            let file = this.files[0];
-            let formData = new FormData();
-            formData.append('file', file);
-
-            fetch('/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(url => {
-                let range = quill.getSelection();
-                if (file.type.startsWith('image/')) {
-                    quill.insertEmbed(range.index, 'image', url);
-                } else if (file.type.startsWith('video/')) {
-                    quill.insertEmbed(range.index, 'video', url);
-                }
-            })
-            .catch(error => {
-                console.error('Error uploading file:', error);
-            });
-        });
-
-		document.getElementById('data-form').addEventListener('submit', function(event) {
-		    event.preventDefault(); // Prevent the default form submission
-			console.log('hello')
-		    const formData = new FormData(this); // Create a FormData object from the form
-
-		    // Add additional data to FormData
-		    formData.append('html-content', quill.getSemanticHTML(0, quill.getLength()));
-			formData.append('image', filename);
-
-		    // Post data to the server
-		    fetch('/article/save-article', {
-		        method: 'POST', // Specify the request method
-		        body: formData // Send the FormData object directly
-		    })
-		    .then(response => response.text())
-            .then(url => {
-                window.location.replace(url)
-            })
-		    .catch((error) => {
-		        console.error('Error:', error); // Handle error
-		    });
-		});
-
-		function deleteImage() {
-			if (!filename) {
-				return;
-			}
-			const formData = new FormData();
-            formData.append('filename', filename); // Append the filename to FormData
-			console.log(filename)
-
-            fetch('/delete-file', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    const preview = document.getElementById('image-preview');
-                    const deleteButton = document.getElementById('delete-button');
-                    preview.src = ''; // Clear the image source
-                    preview.style.display = 'none'; // Hide the image
-                    deleteButton.style.display = 'none'; // Hide the delete button
-                    document.getElementById('profile-pic').value = ''; // Clear the file input
-                    filename = ''; // Reset filename variable
-                } else {
-                    console.error('Error:', data.error);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+		if (contentValue != '') {
+			quill.root.innerHTML = contentValue
+		}
 	</script>
-	<script>
-		window.addEventListener('load', function() {
-    		const btnGroups = document.querySelectorAll('.ql-formats .btn-group');
-    		btnGroups.forEach(btnGroup => {
-        			btnGroup.parentNode.removeChild(btnGroup);
-    			});
-		});
-	</script>
+	<script src="{{ url_for('static', filename='js/article.js') }}"></script>
 {% endblock scripts %}

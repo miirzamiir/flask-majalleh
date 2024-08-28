@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, flash, redirect, url_for, request, send_from_directory
+from flask import Blueprint, render_template, session, flash, redirect, url_for, request, send_from_directory, abort
 from .models import User  
 from article.models import Article, Category
 import re
@@ -14,7 +14,7 @@ user_bp = Blueprint('user', __name__)
 def dashboard():
     if session.get('username'):
         user = User.query.filter(User.username==session.get('username')).first()
-        categories = Category.query.order_by(Category.label).all(),
+        categories = Category.query.order_by(Category.label).all()
         articles = Article.query.filter(Article.author_id==user.id).order_by(Article.date.desc()).all()
         
         return render_template('account/dashboard.html', user=user, categories=categories, articles=articles)
@@ -137,14 +137,12 @@ def update_profile_post():
 @user_bp.get('/<username>')
 def profile(username):
     user = User.query.filter(User.username==username).first()
-    if user:
-        articles = Article.query.filter(Article.author_id==user.id).all()
-        tag_box = Article.tag_box_selector(session=db.session)
-        slider = Article.slider(session=db.session)
-
-        return render_template('account/author.html', user=user, articles=articles, tag_box=tag_box, slider=slider)
-
-    # TODO -> Return 404
+    if user is None:
+        abort(404)
+    articles = Article.query.filter(Article.author_id==user.id).all()
+    tag_box = Article.tag_box_selector(session=db.session)
+    slider = Article.slider(session=db.session)
+    return render_template('account/author.html', user=user, articles=articles, tag_box=tag_box, slider=slider)
 
 @user_bp.get('/media/<path:path>')
 def show_user_media(path):

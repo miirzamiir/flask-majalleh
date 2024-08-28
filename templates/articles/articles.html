@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="loadmore-content">
+        <div class="row" id="masonry">
+            {% for article in articles %}
+                <div class="col-lg-6 col-md-12 col-sm-6 card-container">
+                    <div class="blog-card post-grid">
+                        <div class="blog-card-media">
+                            <img src="{{ article.image }}" alt=""/>
+                        </div>
+                        <div class="blog-card-info">
+                            <h4 class="title">
+                                <a href="{{ url_for('article.article', username=article.author.username, title=article.title) }}">{{ article.title }}</a>
+                            </h4>                                                
+                            <div class="title-sm"><a href="{{ url_for('user.profile', username=article.author.username)}}">{{ article.author.username }}</a></div>
+                            <p>{{ article.summary }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+{% endblock content %}

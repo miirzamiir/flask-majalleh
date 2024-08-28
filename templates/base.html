@@ -21,10 +21,57 @@
     <![endif]-->
     
     <!-- STYLESHEETS -->
+     <style>
+        .katex {
+			    display: inline-block;
+			    text-align: left !important;
+			    direction: ltr !important;
+          color: black !important;
+          font-size: large !important;
+		    }
+        iframe {
+          border-style: none;
+          height: auto;
+          max-width: 100%;
+          vertical-align: middle;
+        }
+            .comments-section {
+              direction: rtl; /* Right-to-left for Persian */
+            }
+
+            .comment {
+                margin: 10px 0;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            .nested-comments {
+                margin-left: 20px; /* Indent nested comments */
+            }
+
+            .reply-button {
+                
+                background-color: black;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                cursor: pointer;
+            }
+     </style>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/plugins.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/templete.css') }}">
     <link class="skin" rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skin/skin-1.css') }}">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
     
     {% block head %} {% endblock head %}
 </head>

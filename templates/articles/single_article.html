@@ -9,9 +9,9 @@
 					<div class="row">
 						<div class="col-xl-9 col-lg-8 col-md-7 col-sm-12 col-12">
 							<div class="section-head text-center">
-								<h2 class="title-head"> <a href="{{ url_for('article.full_width', username=article.author.username, title=article.title) }}">{{ article.title }}</a></h2>
+								<h2 class="title-head"> <a href="{{ url_for('article.article', username=article.author.username, title=article.title, template='full-width') }}">{{ article.title }}</a></h2>
 								
-								<div class="title-sm"> نوشته‌ای از <a href="#">{{ article.author.username }}</a></div>
+								<div class="title-sm"> نوشته‌ای از <a href="{{ url_for('user.profile', username=user.username) }}">{{ article.author.first_name }} {{ article.author.last_name }}</a></div>
 							</div>
 							<div class="blog-post blog-single blog-post-style-2 sidebar">
 								<div class="dlab-post-info">
@@ -27,7 +27,7 @@
 									{% include 'partials/_tags.html' %}
 									<div class="blog-card-info style-1 no-bdr">
 										<div class="date">
-											{{ article.date }}
+											{{ date }}
 										</div>
 										
 									</div>
@@ -38,6 +38,7 @@
 								{% include 'partials/_user_card.html' %}
 								
 							</div>
+							{% include 'partials/_comments.html' %}
 						</div>
 						<div class="col-xl-3 col-lg-4 col-md-5 col-sm-12 col-12">	
 							<div class="side-bar p-l30 sticky-top">
@@ -88,4 +89,8 @@
     </div>
     <!-- Content END-->
 
-	{% endblock content %}
+{% endblock content %}
+
+{% block scripts %}
+	<script src="{{ url_for('static', filename='js/comments.js') }}"></script>
+{% endblock scripts %}
