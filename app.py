@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, flash, redirect, url_for, g
+from flask import Flask, render_template, request, session, flash, redirect, url_for, jsonify
 from database import db
 from secrets import token_hex
 from dotenv import load_dotenv
@@ -8,6 +8,7 @@ from article.models import Article, Category, Bookmark, Vote, Comment
 from authentication.routes import auth_bp
 from article.routes import article_bp
 from user.routes import user_bp
+from hashlib import sha256
 
 
 load_dotenv()
@@ -50,6 +51,43 @@ def search():
 def page_not_found(e):
     categories =  Category.query.order_by(Category.label).all()
     return render_template('errors/notfound.html', categories=categories), 404
+
+@app.post('/upload')
+def upload_file():
+    resp = redirect(request.url)
+    image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'}
+    video_extensions = {'.mp4', '.avi', '.mov', '.mkv', '.wmv', '.flv'}
+    file = None
+    if 'file' in request.files:
+        file = request.files['file']
+    ftype = None
+    if file is not None:
+        fbytes = file.read()
+        filename = sha256(fbytes).hexdigest() 
+        _, ext = os.path.splitext(file.filename.lower())
+        if ext in image_extensions:
+            ftype = 'images'
+        elif ext in video_extensions:
+            ftype = 'videos'
+
+    if ftype is not None:
+        path = os.path.join(app.config['UPLOAD_FOLDER'], ftype, filename+ext)
+        if not os.path.exists(path):
+            with open(path, 'wb') as f:
+                f.write(fbytes)
+        resp = url_for('static', filename=f'contents/{ftype}/{filename+ext}')
+    return resp
+
+@app.post('/delete-file')
+def delete_file():
+    filename = request.form.get('filename')
+    if not filename:
+        return jsonify({'error': 'No filename provided'}), 400
+    try:
+        os.remove(filename[1:])
+        return jsonify({'message': 'File deleted successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 
