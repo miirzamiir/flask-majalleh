@@ -80,9 +80,9 @@
                             <div class="widget widget-stories">
                                 <h6 class="widget-title"><span>جدیدترین مطالب</span></h6>
                                 <div id="minislider1" class="post-carousel owl-carousel owl-theme owl-none owl-btn-3">
-                                    {% for slide in slider %}
+                                    {% for article in articles %}
                                         <div class="item">
-                                            <img src="{{ slide }}" alt=""/>
+                                            <a href="{{url_for('article.article', username=article.author.username, title=article.title)}}"><img src="{{ article.image }}" alt=""></a>
                                         </div>
                                     {% endfor %}
                                 </div>
