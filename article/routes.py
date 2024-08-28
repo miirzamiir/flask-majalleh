@@ -99,15 +99,15 @@ def save_article():
 @article_bp.post('/<username>/<title>/save-edit-article')
 def save_edit_article(username, title):
     if 'username' not in session:
-        jsonify({'status': 401, 'error': 'unauthorized'}), 401
+        return jsonify({'status': 401, 'error': 'unauthorized'}), 401
 
     if session['username'] != username:
-        jsonify({'status': 401, 'error': 'unauthorized'}), 401
+        return jsonify({'status': 401, 'error': 'unauthorized'}), 401
 
     user = User.query.filter(User.username == username).first()
     article = Article.query.filter(Article.author_id == user.id, Article.title == title).first()
     if article is None:
-        jsonify({'status': 404, 'error': 'not found'}), 404
+        return jsonify({'status': 404, 'error': 'not found'}), 404
     user = User.query.filter(User.username == session['username']).first()
     title = request.form.get('title').strip()
     image = request.form.get('image').strip()
@@ -135,3 +135,4 @@ def save_edit_article(username, title):
             flash(error, category='danger')
 
     return url_for('article.edit_article', username=user.username, title=article.title)
+        
