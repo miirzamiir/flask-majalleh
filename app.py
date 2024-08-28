@@ -20,6 +20,8 @@ PORT = os.getenv('PORT')
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+app.config['UPLOAD_FOLDER'] = 'static/contents/'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = token_hex(16)
 
 db.init_app(app)
@@ -46,6 +48,11 @@ def about():
 @app.get('/search')
 def search():
     return 'search'
+
+@app.errorhandler(401)
+def unauthorized(e):
+    categories =  Category.query.order_by(Category.label).all()
+    return render_template('errors/unauthorized.html', categories=categories), 401
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -77,17 +84,6 @@ def upload_file():
                 f.write(fbytes)
         resp = url_for('static', filename=f'contents/{ftype}/{filename+ext}')
     return resp
-
-@app.post('/delete-file')
-def delete_file():
-    filename = request.form.get('filename')
-    if not filename:
-        return jsonify({'error': 'No filename provided'}), 400
-    try:
-        os.remove(filename[1:])
-        return jsonify({'message': 'File deleted successfully'}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 
 
