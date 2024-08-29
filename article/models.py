@@ -32,6 +32,7 @@ class Article(db.Model):
     date = mapped_column(DateTime, default=datetime.now()) 
     bookmarks = relationship('Bookmark', backref='articles') 
     votes = relationship('Vote', backref='articles')
+    comments = relationship('Comment', backref='articles')
 
     def __init__(self, title, image, summary, text, tags, category_id, author_id) -> None:
         super().__init__()
@@ -109,7 +110,15 @@ class Comment(db.Model):
     article_id = mapped_column(Integer, ForeignKey('articles.id'), nullable=False)
     text = mapped_column(String(128))
     parent_id = mapped_column(Integer, ForeignKey('comments.id'), nullable=True)
-    replies = relationship('Comment', backref=backref('parent', remote_side=[id]), lazy=True)
+    # replies = relationship('Comment', backref=backref('parent', remote_side=[id]), lazy=True)
+    
+    @property
+    def user(self):
+        return User.query.get(self.user_id)
+    
+    @property
+    def replies(self):
+        return Comment.query.filter(Comment.parent_id == self.id).all()
 
 
     def __init__(self, user_id, article_id, text, parent_id=None):

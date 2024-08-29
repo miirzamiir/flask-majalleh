@@ -157,6 +157,31 @@ def delete_article(username, title):
         flash('خطا در برقراری با سرور', category='danger')
 
     return redirect(url_for('user.dashboard'))
+
+
+@article_bp.post('/add-comment')
+def add_comment():
+    url = url_for('auth.login')
+    if 'username' in session:
+        data = request.json
+
+        user = User.query.filter(User.username == session['username']).first()
+
+        author = User.query.filter(User.username == data['username']).first()
+
+        article = Article.query.filter(Article.author_id == author.id, Article.title == data['title']).first()
+
+        parent = None
+        if data.get('parent_id'):
+            parent = int(data['parent_id'])
+
+        db.session.add(Comment(user.id, article.id, data['text'], parent))
+        db.session.commit()
+
+        url = url_for('article.article', username=data['username'], title=data['title'])
+
+    return url
+
         
 
         

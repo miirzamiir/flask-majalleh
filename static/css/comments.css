@@ -1,22 +1,44 @@
-.comments-section {
-    direction: rtl; /* Right-to-left for Persian */
-}
-.comment {
+.comment, .reply {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
     margin: 10px 0;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+}
+
+.reply {
+    margin-left: 20px;
+    background-color: #e8f5e9;
+}
+
+.reply-form {
+    margin-top: 10px;
+}
+
+textarea {
+    width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    margin-top: 5px;
 }
-.replies {
-    margin-left: 20px; /* Indent nested comments */
-}
-.reply-button {
-    
-    background-color: black;
+
+button {
+    background-color: black; /* Green */
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin-top: 5px;
     cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: gray;
 }
 .profile-image {
     width: 40px; /* Adjust size as needed */
