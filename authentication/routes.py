@@ -2,6 +2,7 @@ from flask import Blueprint, request, render_template, redirect, flash, session,
 from werkzeug.security import generate_password_hash, check_password_hash
 from user.models import User
 from database import db
+from user.utils import validate_user
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -36,24 +37,24 @@ def register_post():
     password = request.form.get('password')
     re_password = request.form.get('repassword')
 
-    redirect_path = url_for('auth.register')
-    existing_user = User.query.filter((User.username==username) | (User.email==email)).first()
     
-    if existing_user:
-        flash('نام کاربری یا ایمیل تکراری است.', 'danger')
+    errors, _ = validate_user(username=username, email=email, password=password)
+    redirect_path = '/register'
 
-    elif password!=re_password:
-        flash('رمز عبور با تکرارش مطابقت ندارد.', 'danger')
+    if not errors:
+        if password!=re_password:
+            flash('رمز عبور با تکرارش مطابقت ندارد.', 'danger')
+        else:
+            hashed_password = generate_password_hash(password=password)
+            new_user = User(username=username, email=email, password=hashed_password)
+            db.session.add(new_user)
+            db.session.commit()
 
-
-    elif password==re_password:
-        hashed_password = generate_password_hash(password=password)
-        new_user = User(username=username, email=email, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        
-        flash('ثبت نام با موفقیت انجام شد.', 'success')
-        redirect_path = '/login'
+            flash('ثبت نام با موفقیت انجام شد.', 'success')
+            redirect_path = '/login'
+    else:
+        for error in errors:
+            flash(error, category='danger')
 
     return redirect(redirect_path)
 

@@ -1,12 +1,9 @@
 from flask import Blueprint, render_template, session, flash, redirect, url_for, request, send_from_directory, abort
 from .models import User  
 from article.models import Article, Category
-import re
 import os
-import datetime
 from database import db
-from werkzeug.utils import secure_filename
-
+from .utils import validate_user
 
 user_bp = Blueprint('user', __name__)
 
@@ -35,104 +32,44 @@ def update_profile():
 
 @user_bp.post('/editpost')
 def update_profile_post():
+    url = url_for('auth.login')
     if session.get('username'):
         user = User.query.filter(User.username==session.get('username')).first()
 
-        first_name = request.form.get('first_name') 
-        last_name = request.form.get('last_name')
-        username = request.form.get('username')
-        email = request.form.get('email')        
-        phonenumber = request.form.get('phone')
-        birth_date = request.form.get('birth_date')
-        about = request.form.get('bio')
+        first_name = request.form.get('first_name').strip()
+        last_name = request.form.get('last_name').strip()
+        username = request.form.get('username').strip()
+        email = request.form.get('email').strip()
+        phonenumber = request.form.get('phone').strip()
+        birth_date = request.form.get('birth_date').strip()
+        profile_image = request.form.get('profile_image').strip()
+        about = request.form.get('bio').strip()
 
-        update_is_valid = True
 
-        if username!=user.username:
-            if re.match(r'^(?=.{4,})[a-z][a-z0-9_]*\d*$', username):
-                if not User.query.filter(User.username==username).first():
-                    user.username = username
-                    session['username'] = user.username 
-                else:
-                    update_is_valid = False
-                    flash(' نام کاربری تکراری است.', 'danger')
-            else:
-                update_is_valid = False
-                flash('فرمت نام کاربری اشتباه است.', 'danger')
+        errors, date = validate_user(username, email, fname=first_name, lname=last_name, phone=phonenumber, 
+                                     bdate=birth_date, curr_email=user.email, curr_phone=user.phonenumber, curr_username=user.username)
 
-        if email!=user.email and User.query.filter(User.email==email).first():
-            update_is_valid = False
-            flash('ایمیل تکراری است.', 'danger')
-        user.email = email
-
-        if first_name!=user.first_name and first_name.strip():
-            user.first_name = first_name
-        
-        if last_name!=user.last_name and last_name.strip():
-            user.last_name = last_name
-
-        if phonenumber.strip():  
-            if not re.match(r'^09\d{9}$', phonenumber):  
-                update_is_valid = False
-                flash('شماره موبایل درست نیست.', 'danger')  
-            elif phonenumber != user.phonenumber: 
-                user.phonenumber = phonenumber  
+        if not errors:
+            try:
+                user.first_name = first_name
+                user.last_name = last_name
+                user.username = username
+                user.email = email
+                user.phonenumber = phonenumber
+                user.birth_date = date
+                user.profile_image = profile_image
+                user.about = about
+                db.session.commit()
+                flash('تغییرات با موفقیت اعمال شد', category='success')
+            except:
+                flash('خطا در برقراری با سرور', category='danger')
         else:
-            user.phonenumber = None  
+            for error in errors:
+                flash(error, category='danger')
 
-
-        if about!=user.about:
-            user.about = about
-
-        if birth_date != user.birth_date: 
-            if not birth_date.strip():  
-                user.birth_date = None  
-            else:
-                bd = birth_date.split('-')
-                if len(bd) == 3: 
-                    try:
-                        year, month, day = int(bd[0]), int(bd[1]), int(bd[2])
-                        user.birth_date = datetime.date(year=year, month=month, day=day) 
-                    except ValueError:
-                        update_is_valid = False
-                        flash('تاریخ تولد معتبر نیست.', 'danger') 
-                else:
-                    update_is_valid = False
-                    flash('فرمت تاریخ تولد صحیح نیست.', 'danger')
-
-
-        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-        
-        current_file_path = os.path.abspath(__file__)
-        current_dir = os.path.dirname(current_file_path)
-        project_root = os.path.abspath(os.path.join(current_dir, '..'))
-
-
-        pic = request.files.get('pic') 
-
-        if pic and pic.filename:
-            if pic.filename.split('.')[-1] in ALLOWED_EXTENSIONS:
-                filename = f"{session.get('username')}_prof.{pic.filename.split('.')[-1]}"
-                file_path = os.path.join(project_root, os.getenv('PROFILE_IMG_DIR'))
-                os.makedirs(file_path, exist_ok=True)
-                file_path = os.path.join(file_path, filename)
-                pic.save(file_path) 
-                user.profile_image = filename  
-            else:
-                update_is_valid = False
-                flash('عکس باید از یکی از فرمت های png, jpg و یا jpeg باشد.', 'danger') 
-
-
-
-        if update_is_valid:
-            db.session.commit()
-
-        categories = Category.query.order_by(Category.label).all()
-
-        return render_template('account/edit_profile.html', user=user, categories=categories)
-    else:
-        flash('برای دسترسی به پنل کاربری ابتدا باید وارد حساب کاربری خود شوید.', 'danger')
-        return redirect(url_for('auth.login'))
+        url = '/user/edit'
+    
+    return url
 
 @user_bp.get('/<username>')
 def profile(username):
