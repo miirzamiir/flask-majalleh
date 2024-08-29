@@ -1,14 +1,19 @@
 <div class="comments-section">
     <div class="comment">
+        <img
+        {% if author.profile_image %} 
+            src="{{ comment.user.profile_image }}" 
+        {% else %}
+            src="{{ url_for('static', filename='images/icon.png') }}"
+        {% endif %}
+        alt="User Profile" class="profile-image" />
         <p class="comment-author">نام کاربر</p>
         <p class="comment-text">این یک نظر است.</p>
-        <input id="reply-submit" class="btn btn-secondary" type="submit" value="پاسخ دادن" />
-        <div class="nested-comments">
-            <div class="comment">
-                <p class="comment-author">کاربر دیگر</p>
-                <p class="comment-text">این یک پاسخ است.</p>
-                <input id="reply-submit" class="btn btn-secondary" type="submit" value="پاسخ دادن" />
-            </div>
-        </div>
+        <input class="reply-submit btn btn-secondary" type="button" value="پاسخ دادن" />
     </div>
+    {% if comment.replies %}
+        <div class="replies">
+            {% include 'partials/_comments.html' %}
+        </div>
+    {% endif %}
 </div>

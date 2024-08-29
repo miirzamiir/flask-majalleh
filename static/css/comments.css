@@ -1,0 +1,27 @@
+.comments-section {
+    direction: rtl; /* Right-to-left for Persian */
+}
+.comment {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.replies {
+    margin-left: 20px; /* Indent nested comments */
+}
+.reply-button {
+    
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.profile-image {
+    width: 40px; /* Adjust size as needed */
+    height: 40px; /* Adjust size as needed */
+    border-radius: 50%; /* Make it circular */
+    margin-left: 10px; /* Space between image and text */
+    vertical-align: middle; /* Align with text */
+}

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
-{% block head %} {% endblock head %}
+{% block head %}
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/comments.css') }}" />
+{% endblock head %}
 {% block content %}
 <div class="page-content bg-white">
 		<div class="content-block">
@@ -38,7 +40,9 @@
 								{% include 'partials/_user_card.html' %}
 								
 							</div>
-							{% include 'partials/_comments.html' %}
+							{% for comment in article.comments %}
+								{% include 'partials/_comments.html' %}
+							{% endfor %}
 						</div>
 						<div class="col-xl-3 col-lg-4 col-md-5 col-sm-12 col-12">	
 							<div class="side-bar p-l30 sticky-top">
