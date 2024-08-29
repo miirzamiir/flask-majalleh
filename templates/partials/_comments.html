@@ -1,15 +1,19 @@
-{% for reply in comment.replies %}
-    {% if reply.parent_id == comment.id %}
-        <div class="reply">
-            <img
-	    	{% if comment.user.profile_image %} 
-	    		src="{{ reply.user.profile_image }}" 
-	    	{% else %}
-	    		src="{{ url_for('static', filename='images/icon.png') }}"
-	    	{% endif %}
-	    	alt="User Profile" class="profile-image" />
-            <p class="comment-author"> {{ reply.user.first_name }} {{ reply.user.last_name }}</p>
-	    	<p class="comment-text">{{ comment.text }}</p>
+<div class="comments-section">
+    <div class="comment">
+        <img
+        {% if author.profile_image %} 
+            src="{{ comment.user.profile_image }}" 
+        {% else %}
+            src="{{ url_for('static', filename='images/icon.png') }}"
+        {% endif %}
+        alt="User Profile" class="profile-image" />
+        <p class="comment-author"> {{ comment.user.username }} </p>
+        <p class="comment-text">{{ <comment class="text"></comment> }}</p>
+        <input class="reply-submit btn btn-secondary" type="button" value="پاسخ دادن" />
+    </div>
+    {% if comment.replies %}
+        <div class="replies">
+            {% include 'partials/_comments.html' %}
         </div>
     {% endif %}
 {% endfor %}

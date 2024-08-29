@@ -5,15 +5,13 @@ from persiantools.jdatetime import JalaliDate
 
 article_bp = Blueprint('article', __name__)
 
-def validate_article(author_id, title, image, summary, category_label, content, curr_article_title=''):
+def validate_article(author_id, title, summary, category_label, content, curr_article_title=''):
     errors = []
     if title == '':
         errors.append('عنوان مقاله نمیتواند خالی باشد')
     elif Article.query.filter(Article.author_id == author_id, Article.title == title).first() is not None \
           and curr_article_title != title:
         errors.append('مقاله با این عنوان قبلا ثبت شده')
-    if image == '':
-        image = url_for('static', filename='images/default-article.png')
     if summary == '':
         errors.append('خلاصه مقاله نمیتواند خالی باشد')
     if category_label == '' or not Category.query.filter(Category.label == category_label).first():
@@ -21,7 +19,7 @@ def validate_article(author_id, title, image, summary, category_label, content, 
     if content == '':
         errors.append('محتوای مقاله نمیتواند خالی باشد')
 
-    return errors, image
+    return errors
 
 @article_bp.get('/<username>/<title>')
 def article(username, title, template='single_article'):
@@ -79,10 +77,12 @@ def save_article():
         category_label = request.form.get('category').strip()
         content = request.form.get('html-content').strip()
 
-        errors, image = validate_article(user.id, title, image, summary, category_label, content)
+        errors = validate_article(user.id, title, summary, category_label, content)
 
         if not errors:
             try:
+                if image in ('', 'http://127.0.0.1:5000/article/new-article'):
+                    image = url_for('static', filename='images/article-default.png')
                 category = Category.query.filter(Category.label == category_label).first()
                 db.session.add(Article(title, image, summary, content, tags, category.id, user.id))
                 db.session.commit()
@@ -115,7 +115,7 @@ def save_edit_article(username, title):
     tags = request.form.get('tags').strip()
     category_label = request.form.get('category').strip()
     content = request.form.get('html-content').strip()
-    errors, image = validate_article(user.id, title, image, summary, category_label, content, article.title)
+    errors = validate_article(user.id, title, summary, category_label, content, article.title)
     if not errors:
         try:
             category = Category.query.filter(Category.label == category_label).first()
