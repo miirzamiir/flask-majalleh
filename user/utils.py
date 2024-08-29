@@ -17,7 +17,7 @@ def validate_user(username, email, password=None, fname=None, lname=None, phone=
         errors.append('این ایمیل قبلا ثبت شده است')
     
     if password is not None:
-        if re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.{8,20}$)[^\s]*$', password):
+        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.{8,20}$)[^\s]*$', password):
             errors.append('پسورد باید حداقل شامل ۸ کاراکتر و حداکثر ۲۰ کاراکتر باشد. حداقل یک حرف کوچک و یک عدد را شامل شود و فاقد فاصله باشد')
     if fname is not None:
         if len(fname) < 3:

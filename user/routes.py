@@ -64,62 +64,12 @@ def update_profile_post():
             except:
                 flash('خطا در برقراری با سرور', category='danger')
         else:
-            user.phonenumber = None  
+            for error in errors:
+                flash(error, category='danger')
 
-
-        if about!=user.about:
-            user.about = about
-
-        if birth_date != user.birth_date: 
-            if not birth_date.strip():  
-                user.birth_date = None  
-            else:
-                bd = birth_date.split('-')
-                if len(bd) == 3: 
-                    try:
-                        year, month, day = int(bd[0]), int(bd[1]), int(bd[2])
-                        user.birth_date = datetime.date(year=year, month=month, day=day) 
-                    except ValueError:
-                        update_is_valid = False
-                        flash('تاریخ تولد معتبر نیست.', 'danger') 
-                else:
-                    update_is_valid = False
-                    flash('فرمت تاریخ تولد صحیح نیست.', 'danger')
-
-
-        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-        
-        current_file_path = os.path.abspath(__file__)
-        current_dir = os.path.dirname(current_file_path)
-        project_root = os.path.abspath(os.path.join(current_dir, '..'))
-
-
-        pic = request.files.get('pic') 
-
-        if pic and pic.filename:
-            if pic.filename.split('.')[-1] in ALLOWED_EXTENSIONS:
-                filename = f"{session.get('username')}_prof.{pic.filename.split('.')[-1]}"
-                file_path = os.path.join(project_root, os.getenv('PROFILE_IMG_DIR'))
-                os.makedirs(file_path, exist_ok=True)
-                file_path = os.path.join(file_path, filename)
-                pic.save(file_path) 
-                user.profile_image = filename  
-            else:
-                update_is_valid = False
-                flash('عکس باید از یکی از فرمت های png, jpg و یا jpeg باشد.', 'danger') 
-
-
-
-        if update_is_valid:
-            flash(' ویرایش اطلاعات حساب کاربری با موفقیت انجام شد.', 'success')
-            db.session.commit()
-
-        categories = Category.query.order_by(Category.label).all()
-
-        return render_template('account/edit_profile.html', user=user, categories=categories)
-    else:
-        flash('برای دسترسی به پنل کاربری ابتدا باید وارد حساب کاربری خود شوید.', 'danger')
-        return redirect(url_for('auth.login'))
+        url = '/user/edit'
+    
+    return url
 
 @user_bp.get('/<username>')
 def profile(username):
