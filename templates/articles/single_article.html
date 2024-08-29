@@ -36,46 +36,54 @@
 								</div>
 							</div>
 							<div class="">
-								
-								{% include 'partials/_user_card.html' %}
-								
+								{% include 'partials/_user_card.html' %}	
 							</div>
-							<h3 class="text-center">نظرات</h3>
-							<hr />
-							<button onclick="showCommentForm()">نظر دادن</button>
-							<div class="reply-form" id="comment-form" style="display:none;">
-								<textarea id="comment-text" placeholder="نظر خود را بنویسید..."></textarea>
-								<button onclick="addComment()">ارسال</button>
-							</div>
-							<div class="comment-section">
-								{% for comment in article.comments %}
-									{% if not comment.parent_id %}
-										<div class="comment">
-											<img
-											{% if comment.user.profile_image %} 
-												src="{{ comment.user.profile_image }}" 
-											{% else %}
-												src="{{ url_for('static', filename='images/icon.png') }}"
-											{% endif %}
-											alt="User Profile" class="profile-image" />
-											<p class="comment-author"> {{ comment.user.first_name }} {{ comment.user.last_name }}</p>
-											<p class="comment-text">{{ comment.text }}</p>
-											<button onclick="showReplyForm('{{comment.id}}')">پاسخ دادن</button>
-											<div class="reply-form" id="reply-form-{{comment.id}}" style="display:none;">
-											<textarea id="reply-text-{{comment.id}}" placeholder="نظر خود را بنویسید..."></textarea>
-											<button onclick="addReply('{{comment.id}}')">ارسال</button>
-										</div>
-										<div class="replies" id="replies-{{comment.id }}">
-									{% endif %}
-									{% if comment.replies %}
-										
-											{% include 'partials/_comments.html' %}
-									{% endif %}
-									</div>
-								{% endfor %}
-							</div>
-							
+
+					<h3 class="text-center">نظرات</h3>
+					<hr />
+
+					<div class="comment-section">
+						<button onclick="showCommentForm()">نظر دادن</button>
+						<div class="reply-form" id="comment-form" style="display:none;">
+							<textarea id="comment-text" placeholder="نظر خود را بنویسید..."></textarea>
+							<button onclick="addComment()">ارسال</button>
 						</div>
+						
+						{% for comment in article.comments %}
+							{% if not comment.parent_id %}
+								<div class="comment">
+									<img
+									{% if comment.user.profile_image %} 
+										src="{{ comment.user.profile_image }}" 
+									{% else %}
+										src="{{ url_for('static', filename='images/icon.png') }}"
+									{% endif %}
+									alt="User Profile" class="profile-image" />
+									<p class="comment-author"> {{ comment.user.first_name }} {{ comment.user.last_name }}</p>
+									<p class="comment-text">{{ comment.text }}</p>
+									<button onclick="showReplyForm('{{comment.id}}')">پاسخ دادن</button>
+									<div class="reply-form" id="reply-form-{{comment.id}}" style="display:none;">
+										<textarea id="reply-text-{{comment.id}}" placeholder="نظر خود را بنویسید..."></textarea>
+										<button onclick="addReply('{{comment.id}}')">ارسال</button>
+									</div>
+									<div class="replies" id="replies-{{comment.id }}">
+										{% if comment.replies %}
+												{% include 'partials/_comments.html' %}
+										{% endif %}
+									</div>
+								</div>
+							{% endif %}
+						{% endfor %}
+					</div>
+						
+					</div>
+						
+
+
+
+
+
+
 						<div class="col-xl-3 col-lg-4 col-md-5 col-sm-12 col-12">	
 							<div class="side-bar p-l30 sticky-top">
 								<div class="widget widget-newsletter text-center">

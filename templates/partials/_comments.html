@@ -10,6 +10,15 @@
 	    	alt="User Profile" class="profile-image" />
             <p class="comment-author"> {{ reply.user.first_name }} {{ reply.user.last_name }}</p>
 	    	<p class="comment-text">{{ reply.text }}</p>
+			<button onclick="showReplyForm('{{reply.id}}')">پاسخ دادن</button>
+			<div class="reply-form" id="reply-form-{{reply.id}}" style="display:none;">
+				<textarea id="reply-text-{{reply.id}}" placeholder="نظر خود را بنویسید..."></textarea>
+				<button onclick="addReply('{{reply.id}}')">ارسال</button>
+			</div>
+			{% if reply.replies %}
+				{% set comment = reply %}
+				{% include 'partials/_comments.html' %}
+			{% endif %}
         </div>
     {% endif %}
 {% endfor %}
