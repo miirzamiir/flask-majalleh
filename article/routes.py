@@ -32,8 +32,10 @@ def article(username, title, template='single_article'):
     persian_date = JalaliDate(article.date)
     if article == None:
         abort(404)
+    tag_box =  Article.tag_box_selector(session=db.session)
+    slider =  Article.slider(session=db.session)
     
-    return render_template(f'articles/{template}.html', article=article, user=article.author, tags=tags, date=persian_date, categories=categories)
+    return render_template(f'articles/{template}.html', article=article, user=article.author, tags=tags, date=persian_date, categories=categories, tag_box=tag_box, slider=slider)
 
 
 @article_bp.get('/article/new-article')

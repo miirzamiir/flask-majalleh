@@ -110,7 +110,7 @@
                             <h6 class="widget-title"><span>برچسب‌ها‭</span></h6>
                             <div class="tagcloud text-center"> 
                                 {% for tag in tag_box %}
-									<a href="{{ url_for('tag', tags=tag) }}">{{ tag }}</a>
+                                    <a href="{{ url_for('tag', tags=tag) }}">{{ tag }}</a>
                                 {% endfor %}
                             </div>
                         </div>
