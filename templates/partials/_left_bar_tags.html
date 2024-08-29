@@ -2,7 +2,7 @@
     <h6 class="widget-title"><span>برچسب‌ها</span></h6>
     <div class="tagcloud text-center"> 
         {% for tag in tag_box %}
-            <a href="/search/tags?tag={{tag}}&page_number=1">{{tag}}</a>
+            <a href="{{ url_for('tag', tags=tag) }}">{{ tag }}</a>
         {% endfor %}
         
     </div>

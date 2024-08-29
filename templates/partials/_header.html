@@ -24,7 +24,7 @@
                     <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt=""/></a>
                 </div>
                 <div class="dlab-topbar-right topbar-social">
-                    <form action="{{ url_for('auth.logout') }}" method="GET" id="SearchBox">
+                    <form action="{{ url_for('search') }}" method="GET" id="SearchBox">
                         <input type="text" name="q" placeholder="جستجو در مجله ..." id="qinput" />
                         <div id="qcl" onclick="javascript:{ document.getElementById('SearchBox').submit() }"> <i class="fa fa-search" aria-hidden="true"></i></div>
                     </form>
@@ -61,7 +61,7 @@
                                 <a href="#">دسته بندی <i class="fa fa-chevron-down"></i></a>
                                 <ul class="sub-menu">
                                     {% for category in categories %}
-                                        <li><a href="{{ url_for('search', category=category.name, page_number=1) }}">{{ category.label }}</a></li>
+                                        <li><a href="{{ url_for('category', label=category.label) }}">{{ category.label }}</a></li>
                                     {% endfor %}
                                 </ul>
                             </li>
@@ -69,15 +69,9 @@
                                 <a href="{{ url_for('about') }}">درباره ما<i class="fa fa-chevron-down"></i></a>
                             </li>
                             <li>
-                                {% if session.get('username') %}
-                                    {% if 'dashboard' in request.path %}
-                                        <a href="#">نوشته جدید<i class="fa fa-chevron-down"></i></a>
-                                    {% else %}
-                                        <a href="{{ url_for('user.dashboard') }}">پنل کاربری<i class="fa fa-chevron-down"></i></a>
-                                    {% endif %}
-                                {% else %}
-                                    <a href="{{ url_for('auth.login') }}">ورود<i class="fa fa-chevron-down"></i></a>
-                                {% endif %}
+                                <a href="{{ url_for('search') }}">صفحه جستجو<i class="fa fa-chevron-down"></i></a>
+
+                        
                             </li>
                             <li>
                                 {% if session.get('username') %}

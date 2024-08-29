@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, session, flash, redirect, url_for, jsonify
+from flask import Flask, render_template, request, session, flash, redirect, url_for
 from database import db
 from secrets import token_hex
 from dotenv import load_dotenv
 from flask_migrate import Migrate
 import os
+from sqlalchemy import and_
 from article.models import Article, Category, Bookmark, Vote, Comment
 from authentication.routes import auth_bp
 from article.routes import article_bp
@@ -47,7 +48,76 @@ def about():
 
 @app.get('/search')
 def search():
-    return 'search'
+    title_summary_query = request.args.get('q', '')
+    tags_query = request.args.get('tags', '')
+    category_query = request.args.get('category', '')
+
+    query = Article.query
+
+    if title_summary_query:
+        query = query.filter(
+            (Article.title.ilike(f'%{title_summary_query}%')) |
+            (Article.summary.ilike(f'%{title_summary_query}%'))
+        )
+
+    if tags_query:
+        filter_tag = []        
+        [filter_tag.append(Article.tags.ilike(f'%{tag}%')) for tag in tags_query.split()]
+
+        query = query.filter(and_(*filter_tag))
+
+    if category_query:
+        try:
+            category_id = Category.query.filter(Category.label==category_query).first().id
+            query = query.filter(Article.category_id == category_id)
+        except:
+           flash('چنین دسته بندی ای وجود ندارد.', 'warning')
+            
+
+    categories =  Category.query.order_by(Category.label).all()
+    articles = query.all()
+    tag_box =  Article.tag_box_selector(session=db.session)
+    slider =  Article.slider(session=db.session)
+    
+
+    return render_template('search/search.html', categories=categories, articles=articles, tag_box=tag_box, slider=slider, q=title_summary_query, t=tags_query, c=category_query)
+
+@app.get('/category')
+def category():
+    label = request.args.get('label', '')
+    articles = None
+    if label:
+        try:
+            category_id = Category.query.filter(Category.label==label).first().id
+            articles = Article.query.filter(Article.category_id == category_id)
+        except:
+           flash('چنین دسته بندی ای وجود ندارد.', 'warning')
+        
+    
+    categories =  Category.query.order_by(Category.label).all()
+    tag_box =  Article.tag_box_selector(session=db.session)
+    slider =  Article.slider(session=db.session)
+
+    return render_template('search/category.html', articles=articles, categories=categories, tag_box=tag_box, slider=slider, q=label)
+
+@app.get('/tag')
+def tag():
+    query = Article.query
+    tags = request.args.get('tags', '')
+    if tags:
+        filter_tag = []        
+        [filter_tag.append(Article.tags.ilike(f'%{tag}%')) for tag in tags.split()]
+
+        query = query.filter(and_(*filter_tag))
+        
+    
+    categories =  Category.query.order_by(Category.label).all()
+    articles = query.all()
+    tag_box =  Article.tag_box_selector(session=db.session)
+    slider =  Article.slider(session=db.session)
+
+    return render_template('search/category.html', articles=articles, categories=categories, tag_box=tag_box, slider=slider, q=tags)
+
 
 @app.errorhandler(401)
 def unauthorized(e):
