@@ -41,8 +41,7 @@ document.getElementById('data-form').addEventListener('submit', function(event) 
 	else {
 		formData.append('html-content', '');
 	}
-	const preview = document.getElementById('image-preview')
-	formData.append('image', preview.src)
+	formData.append('image', filename)
     // Post data to the server
     fetch(path, {
         method: 'POST', // Specify the request method

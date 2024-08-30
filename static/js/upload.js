@@ -1,3 +1,5 @@
+let filename = ''
+
 function deleteImage() {
     const preview = document.getElementById('image-preview');
     if (!preview.src) {
@@ -8,8 +10,7 @@ function deleteImage() {
     preview.style.display = 'none';
     deleteButton.style.display = 'none';
     document.getElementById('profile-pic').value = '';
-    const formData = new FormData();
-    formData.append('filename', preview.src);
+    filename = ''
 }
 
 document.getElementById('profile-pic').addEventListener('change', function() {
@@ -26,6 +27,7 @@ document.getElementById('profile-pic').addEventListener('change', function() {
 		const deleteButton = document.getElementById('delete-button');
 		deleteButton.style.display = 'block'
 		preview.src = url;
+        filename = url
 		preview.style.display = 'block'
     })
     .catch(error => {
