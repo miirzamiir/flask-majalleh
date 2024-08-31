@@ -117,6 +117,8 @@ def save_edit_article(username, title):
     tags = request.form.get('tags').strip()
     category_label = request.form.get('category').strip()
     content = request.form.get('html-content').strip()
+
+    print(content)
     errors = validate_article(user.id, title, summary, category_label, content, article.title)
     if not errors:
         try:
@@ -130,7 +132,7 @@ def save_edit_article(username, title):
             article.summary = summary
             article.tags = tags
             article.category_id = category.id
-            article.content = content
+            article.text = content
             db.session.commit()
             return url_for('user.dashboard')
         except:
@@ -167,13 +169,13 @@ def delete_article(username, title):
 @article_bp.post('/add-comment')
 def add_comment():
     data = request.json
+    if not data.get('username') or not data.get('title'):
+        return jsonify({'status': 400, 'error': 'invalid json'}), 400
     url = url_for('auth.login', backurl=url_for('article.article', username=data['username'], title=data['title']))
     if 'username' in session:
 
         user = User.query.filter(User.username == session['username']).first()
-
         author = User.query.filter(User.username == data['username']).first()
-
         article = Article.query.filter(Article.author_id == author.id, Article.title == data['title']).first()
 
         parent = None

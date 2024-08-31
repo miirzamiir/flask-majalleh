@@ -28,8 +28,7 @@
                                         <div class="blog-card-info">
                                             <h4 class="title"><a href="{{ url_for('article.article', username=user.username, title=article.title) }}">{{ article.title }}</a></h4>
                                             <p>{{ article.summary }}</p>
-                                            <div class="title-sm"><a href="{{ url_for('user.profile', username=user.username) }}"> {{ article.author.first_name }} {{ article.author.last_name }}</a></div>
-                                            <div class="title-sm"><a href="{{ url_for('article.edit_article', username=user.username, title=article.title) }}"> ویرایش </a></div>
+                                            <div class="title-sm"><a style="color: orange !important;" href="{{ url_for('article.edit_article', username=user.username, title=article.title) }}"> ویرایش </a></div>
                                             <div class="title-sm"><a href="{{ url_for('article.delete_article', username=user.username, title=article.title) }}"> حذف </a></div>
                                         </div>
                                     </div>
