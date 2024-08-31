@@ -44,7 +44,7 @@ def new_article():
     resp = render_template('/articles/new_article.html', categories=categories, article=None)
     if 'username' not in session:
         flash('اول باید وارد حساب کاربری خود شوید', 'warning')
-        resp = redirect('/login')
+        resp = redirect(url_for('auth.login', backurl='/article/new-article'))
     return resp
 
 @article_bp.get('/<username>/<title>/edit-article')
@@ -83,7 +83,7 @@ def save_article():
 
         if not errors:
             try:
-                if image in ('', 'http://127.0.0.1:5000/article/new-article'):
+                if image == '':
                     image = url_for('static', filename='images/article-default.png')
                 category = Category.query.filter(Category.label == category_label).first()
                 db.session.add(Article(title, image, summary, content, tags, category.id, user.id))
@@ -120,6 +120,9 @@ def save_edit_article(username, title):
     errors = validate_article(user.id, title, summary, category_label, content, article.title)
     if not errors:
         try:
+
+            if image == '':
+                image = url_for('static', filename='images/article-default.png')
             category = Category.query.filter(Category.label == category_label).first()
 
             article.title = title
@@ -163,9 +166,9 @@ def delete_article(username, title):
 
 @article_bp.post('/add-comment')
 def add_comment():
-    url = url_for('auth.login')
+    data = request.json
+    url = url_for('auth.login', backurl=url_for('article.article', username=data['username'], title=data['title']))
     if 'username' in session:
-        data = request.json
 
         user = User.query.filter(User.username == session['username']).first()
 

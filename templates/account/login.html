@@ -31,10 +31,15 @@
                 <br/>
                 <h2> ورود به حساب کاربری </h2>
             </div>
-            <form action="{{ url_for('auth.login_post') }}" method="POST">
+            <form 
+                {% if backurl %}
+                    action="{{ url_for('auth.login_post', backurl=backurl) }}" 
+                {% else %}
+                    action="{{ url_for('auth.login_post') }}"
+                {% endif %}
+            method="POST">
 
                 {% include 'partials/_alerts.html' %}
-                
                 <div class="input-group container">
                     <span class="input-group-append">
                         <button type="submit" class="btn-sm fa-btn"><i class="fa fa-user fa-btn"></i></button>

@@ -8,19 +8,24 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.get('/login')
 def login():
-    return render_template('account/login.html')
+    backurl = request.args.get('backurl', None)
+    return render_template('account/login.html', backurl=backurl)
 
 @auth_bp.post('/loginpost')
 def login_post():
+    backurl = request.args.get('backurl', None)
     username = request.form.get('username')
     password = request.form.get('password')
 
-    redirect_path = '/login'
+    redirect_path = url_for('auth.login', backurl=backurl)
 
     user = User.query.filter(User.username==username).first()
     if user and check_password_hash(user.password, password):
         session['username'] = user.username
-        redirect_path = '/'
+        if backurl:
+            redirect_path = backurl
+        else:
+            redirect_path = '/'
     else:
         flash('ورود ناموفق. اطلاعات ورودی را بازبینی کنید.', 'danger')
     

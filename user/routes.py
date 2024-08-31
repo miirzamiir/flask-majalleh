@@ -17,7 +17,7 @@ def dashboard():
         return render_template('account/dashboard.html', user=user, categories=categories, articles=articles)
     else:
         flash('برای دسترسی به پنل کاربری ابتدا باید وارد حساب کاربری خود شوید.', 'danger')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('auth.login', backurl=url_for('user.dashboard')))
 
 @user_bp.get('/edit')
 def update_profile():
@@ -27,8 +27,8 @@ def update_profile():
 
         return render_template('account/edit_profile.html', user=user, categories=categories)
     else:
-        flash('برای دسترسی به پنل کاربری ابتدا باید وارد حساب کاربری خود شوید.', 'danger')
-        return redirect(url_for('auth.login'))
+        flash('برای دسترسی به بخش ویرایش پروفایل ابتدا باید وارد حساب کاربری خود شوید.', 'danger')
+        return redirect(url_for('auth.login', backurl=url_for('user.edit')))
 
 @user_bp.post('/editpost')
 def update_profile_post():
@@ -44,7 +44,6 @@ def update_profile_post():
         birth_date = request.form.get('birth_date').strip()
         profile_image = request.form.get('profile_image').strip()
         about = request.form.get('bio').strip()
-
 
         errors, date = validate_user(username, email, fname=first_name, lname=last_name, phone=phonenumber, 
                                      bdate=birth_date, curr_email=user.email, curr_phone=user.phonenumber, curr_username=user.username)
