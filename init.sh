@@ -1,8 +1,8 @@
 #!/bin/bash
 
 rm -rf instance
-rm -rf contents/images
-rm -rf contents/videos
+rm -rf static/contents/images
+rm -rf static/contents/videos
 
 command_exists() {
     command -v "$1" >/dev/null 2>&1
