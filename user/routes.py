@@ -28,7 +28,7 @@ def update_profile():
         return render_template('account/edit_profile.html', user=user, categories=categories)
     else:
         flash('برای دسترسی به بخش ویرایش پروفایل ابتدا باید وارد حساب کاربری خود شوید.', 'danger')
-        return redirect(url_for('auth.login', backurl=url_for('user.edit')))
+        return redirect(url_for('auth.login', backurl=url_for('user.update_profile')))
 
 @user_bp.post('/editpost')
 def update_profile_post():
