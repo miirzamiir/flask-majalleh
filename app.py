@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, jsonify, abort, make_response
 from database import db
 from secrets import token_hex
 from dotenv import load_dotenv
@@ -10,6 +10,8 @@ from authentication.routes import auth_bp
 from article.routes import article_bp
 from user.routes import user_bp
 from hashlib import sha256
+from werkzeug.middleware.proxy_fix import ProxyFix
+import logging
 
 
 load_dotenv()
@@ -129,32 +131,43 @@ def page_not_found(e):
     categories =  Category.query.order_by(Category.label).all()
     return render_template('errors/notfound.html', categories=categories), 404
 
-@app.post('/upload')
-def upload_file():
-    resp = redirect(request.url)
-    image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'}
-    video_extensions = {'.mp4', '.avi', '.mov', '.mkv', '.wmv', '.flv'}
+@app.errorhandler(413)
+def file_too_large(e):
+    return jsonify({'status': 413, 'error': 'too large file', 'message': 'حجم فایل باید کمتر از ۱۶مگابایت باشد'}), 413
+
+@app.post('/upload-video')
+def upload_video():
+    video_extensions = ['.mp4', '.avi', '.mov', '.mkv', '.wmv', '.flv']
+    return upload(video_extensions, 'videos')
+
+@app.post('/upload-image')
+def upload_image():
+    image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff']
+    return upload(image_extensions, 'images')
+
+def upload(extensions, ftype):
     file = None
     if 'file' in request.files:
         file = request.files['file']
-    ftype = None
+    ext = ''
     if file is not None:
-        fbytes = file.read()
-        filename = sha256(fbytes).hexdigest() 
         _, ext = os.path.splitext(file.filename.lower())
-        if ext in image_extensions:
-            ftype = 'images'
-        elif ext in video_extensions:
-            ftype = 'videos'
-
-    if ftype is not None:
-        path = os.path.join(app.config['UPLOAD_FOLDER'], ftype, filename+ext)
-        if not os.path.exists(path):
-            with open(path, 'wb') as f:
-                f.write(fbytes)
-        resp = url_for('static', filename=f'contents/{ftype}/{filename+ext}')
+    valid_types = ','.join(extensions)
+    resp = jsonify({'status': 415, 'error': 'media not supported', 'message': f'فایل ورودی باید یکی از این موارد باشد ({valid_types})'}), 415
+    if ext in extensions:
+        resp = save_file(file, ext, ftype)
     return resp
+    
 
+def save_file(file, ext, ftype):
+    fbytes = file.read()
+    filename = sha256(fbytes).hexdigest() 
+    path = os.path.join(app.config['UPLOAD_FOLDER'], ftype, filename+ext)
+    if not os.path.exists(path):
+        with open(path, 'wb') as f:
+            f.write(fbytes)
+    resp = jsonify({'status': 200, 'url': url_for('static', filename=f'contents/{ftype}/{filename+ext}')})
+    return resp
 
 
 if __name__ == '__main__':

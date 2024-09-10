@@ -2,33 +2,50 @@ quill.format('align', 'right')
 quill.format('direction', 'rtl')
 
 quill.getModule('toolbar').addHandler('image', function() {
-    document.getElementById('fileInput').click();
+    document.getElementById('image-input').click();
 });
 
 quill.getModule('toolbar').addHandler('video', function() {
-    document.getElementById('fileInput').click();
+    document.getElementById('video-input').click();
 });
 
-document.getElementById('fileInput').addEventListener('change', function() {
-    let file = this.files[0];
-    let formData = new FormData();
-    formData.append('file', file)
-    fetch('/upload', {
+function upload(form, type) {
+    fetch(`/upload-${type}`, {
         method: 'POST',
-        body: formData
+        body: form
     })
-    .then(response => response.text())
-    .then(url => {
-        let range = quill.getSelection();
-        if (file.type.startsWith('image/')) {
-            quill.insertEmbed(range.index, 'image', url);
-        } else if (file.type.startsWith('video/')) {
-            quill.insertEmbed(range.index, 'video', url);
+    .then(response => response.json())
+    .then(data => {
+        const messages = document.getElementById('messages')
+        messages.innerHTML = ''
+        if (data.error === undefined) {
+            let range = quill.getSelection()
+            quill.insertEmbed(range.index, type, data.url)
+        }
+        else {
+            const divMsg = document.createElement('div')
+            divMsg.className = 'alert alert-danger'
+            divMsg.innerHTML = data.message
+            messages.appendChild(divMsg)
         }
     })
     .catch(error => {
-        console.error('Error uploading file:', error);
+        console.log(error)
     });
+}
+
+document.getElementById('image-input').addEventListener('change', function() {
+    let file = this.files[0]
+    let formData = new FormData()
+    formData.append('file', file)
+    upload(formData, 'image')
+});
+
+document.getElementById('video-input').addEventListener('change', function() {
+    let file = this.files[0]
+    let formData = new FormData()
+    formData.append('file', file)
+    upload(formData, 'video')
 });
 
 document.getElementById('data-form').addEventListener('submit', function(event) {
@@ -68,5 +85,3 @@ window.addEventListener('load', function() {
             btnGroup.parentNode.removeChild(btnGroup);
         });
 });
-
-console.log('{{user.username}}')
